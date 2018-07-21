@@ -22,11 +22,9 @@ public class HomeScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-        imLogo = findViewById(R.id.imLogo);
+
         loadBar = findViewById(R.id.progressBar4);
-        Animation slideOut =  AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide_out);
-        slideOut.setDuration(5000);
-        imLogo.setAnimation(slideOut);
+
         Timer(3000);
     }
     public void Timer(int duration){
