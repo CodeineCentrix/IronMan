@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IronMan.iml" filepath="$PROJECT_DIR$/IronMan.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\s217057098\StudioProjects\IronMan\app\app.iml" filepath="C:\Users\s217057098\StudioProjects\IronMan\app\app.iml" />
     </modules>
   </component>
 </project>
