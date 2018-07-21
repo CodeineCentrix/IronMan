@@ -27,6 +27,7 @@
             app:cardCornerRadius="4dp"
             app:cardElevation="8dp"
            android:layout_margin="8dp"
+
             >
 
             <RelativeLayout
