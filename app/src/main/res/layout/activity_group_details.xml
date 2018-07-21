@@ -43,7 +43,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="16dp"
-                    android:src="@drawable/prayerroom" />
+                    android:src="@drawable/ic_launcher_background" />
 
                 <TextView
                     android:id="@+id/person_name"
@@ -104,7 +104,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="16dp"
-                    android:src="@drawable/anathiwithpcs"
+                    android:src="@drawable/ic_launcher_background"
                     />
 
                 <TextView
