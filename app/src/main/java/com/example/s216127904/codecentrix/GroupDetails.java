@@ -9,5 +9,11 @@ public class GroupDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_details);
+        try {
+            getSupportActionBar().setTitle("Group Details");
+        }catch ( Exception a  ){
+
+        }
+
     }
 }
