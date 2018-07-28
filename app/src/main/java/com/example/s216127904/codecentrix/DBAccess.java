@@ -233,8 +233,10 @@ boolean validUser = false;
                 penalty.TentID,
                 penalty.RacerID,
                 penalty.RefID,
-                penalty.CommentID
-               // penalty.PenaltyLocation
+                penalty.CommentID,
+                penalty.PenaltyTime,
+                penalty.PenaltyPicturePath
+
         };
         boolean i = DBHelper.NonQuery("uspAddPenalty",paras);
         DBHelper.Close();

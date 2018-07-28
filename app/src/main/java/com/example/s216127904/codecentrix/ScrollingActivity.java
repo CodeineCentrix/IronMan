@@ -18,7 +18,11 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ScrollingActivity extends AppCompatActivity {
     ImageView imgRacer;
@@ -143,10 +147,17 @@ public class ScrollingActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        business.AddPenalty(penalty);
-//        penalty.RefID = 0;//from a file
-//
-//        penalty.PenaltyPicturePath;
 
+        penalty.RefID = 1;//from a file
+        penalty.PenaltyPicturePath = "http://sict-iis.nmmu.ac.za/codecentrix/Ironman/pictures/";
+        try {
+
+            SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss");
+            String date = df.format(Calendar.getInstance().getTime());
+          penalty.PenaltyTime = new Time(df.parse(date).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        business.AddPenalty(penalty);
     }
 }
