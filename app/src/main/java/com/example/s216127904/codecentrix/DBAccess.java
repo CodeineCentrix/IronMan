@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class DBAccess {
 
@@ -186,5 +187,23 @@ public class DBAccess {
             e.printStackTrace();// I propable should inform the user
         }
         return ticketModel;
+    }
+    public ArrayList<CommentsModel> GetComments() {
+        ArrayList<CommentsModel> comments = new ArrayList<>();
+        outerResultSet = DBHelper.Select("uspGetComments");
+        try {
+
+           while (outerResultSet.next()){
+            CommentsModel comment = new CommentsModel();
+            comment.CommentID = outerResultSet.getInt("CommentID");
+            comment.CommentDescription = outerResultSet.getString("CommentDescription");
+            comment.TicketID = outerResultSet.getInt("TicketID");
+            comments.add(comment);
+           }
+            DBHelper.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments;
     }
 }

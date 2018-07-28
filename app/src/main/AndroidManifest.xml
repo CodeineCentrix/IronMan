@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".GroupDetails" />
-        <activity android:name=".RecordPenalty"></activity>
+        <activity android:name=".RecordPenalty" />
+        <activity android:name=".Comments"></activity>
     </application>
 
 </manifest>

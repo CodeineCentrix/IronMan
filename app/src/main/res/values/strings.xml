@@ -14,4 +14,7 @@
     <string name="anatName">Anathi Matshaya</string>
     <string name="anatStudNum">216127904</string>
     <string name="wellcome_text">We present to you</string>
+    <string name="blue">Blue</string>
+    <string name="red">Red</string>
+    <string name="yellow">Yellow</string>
 </resources>
