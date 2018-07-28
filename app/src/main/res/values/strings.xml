@@ -123,4 +123,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="enter_racer_number">Enter racer number</string>
+    <string name="enter_racer_name">Enter Racer name</string>
 </resources>

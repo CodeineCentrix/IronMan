@@ -2,8 +2,11 @@
 <resources>
     <color name="colorPrimary">#FF0000</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#311515</color>
     <color name="colorWhite">#ffffff</color>
     <color name="loginButton">#7f0000</color>
     <color name="loginForm">#ff4c4c</color>
+    <color name="red" >#ec0606</color>
+    <color name="yellow" >#ffde04</color>
+    <color name="blue" >#06a3ec</color>
 </resources>
