@@ -6,7 +6,13 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 
+import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpConnection;
+import org.apache.http.HttpConnectionMetrics;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -18,6 +24,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class UploadImage extends AsyncTask<Void,Void, Void> {
@@ -41,7 +48,8 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         dataToSend.add(new BasicNameValuePair("name",name ));
 
         HttpParams httpRequestParams = getHttpRequestParams();
-        HttpClient client = new DefaultHttpClient(httpRequestParams);
+
+       HttpClient client = new DefaultHttpClient(httpRequestParams);
         HttpPost post = new HttpPost("http://sict-iis.nmmu.ac.za/codecentrix/IronMan/" + "SavePicture.php");
         try {
              post.setEntity(new UrlEncodedFormEntity(dataToSend));

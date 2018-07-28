@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -156,6 +157,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
+            //Add bigger spinner
+            final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                    R.style.Theme_AppCompat_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Authenticating...");
+            progressDialog.show();
+            //End big spinner
             Context c = getApplicationContext();
             mAuthTask = new UserLoginTask(email, password, c,mProgressView);
             mAuthTask.execute();
