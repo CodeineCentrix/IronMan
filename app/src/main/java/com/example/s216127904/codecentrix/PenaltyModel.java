@@ -19,7 +19,7 @@ public class PenaltyModel {
     private String PenaltyLocation ;
     private Date PenaltyDate;
     private Time PenaltyTime;
-    ImageView imageToUpload;
+
 
     public  void sendImageToServer(Bitmap imageToUpload) throws IOException {
         //Quickly give the predicted path
