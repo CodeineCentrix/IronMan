@@ -226,4 +226,18 @@ boolean validUser = false;
         DBHelper.Close();
         return  validUser;
     }
+
+    public Boolean AddPenalty(PenaltyModel penalty){
+        Object[] paras = {
+                penalty.TicketID,
+                penalty.TentID,
+                penalty.RacerID,
+                penalty.RefID,
+                penalty.CommentID
+               // penalty.PenaltyLocation
+        };
+        boolean i = DBHelper.NonQuery("uspAddPenalty",paras);
+        DBHelper.Close();
+        return i;
+    }
 }

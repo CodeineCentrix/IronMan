@@ -10,15 +10,15 @@ import java.util.Date;
 
 
 public class PenaltyModel {
-    private int CommentID;
-    private int TentID;
-    private int RacerID;
-    private int RefID;
-    private int TicketID;
-    private String PenaltyPicturePath ;
-    private String PenaltyLocation ;
-    private Date PenaltyDate;
-    private Time PenaltyTime;
+    public int CommentID;
+    public int TentID;
+    public int RacerID;
+    public int RefID;
+    public int TicketID;
+    public String PenaltyPicturePath ;
+    public String PenaltyLocation ;
+    public Date PenaltyDate;
+    public Time PenaltyTime;
 
 
     public  void sendImageToServer(Bitmap imageToUpload) throws IOException {
