@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -308,7 +308,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else {
                 showProgress(false);
 
-
+                Intent showMain = new Intent(getApplicationContext(),RecordPenalty.class);
+                startActivity(showMain);
 
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

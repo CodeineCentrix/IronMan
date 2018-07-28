@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class CommentAdapter extends BaseAdapter {
 
-    private ArrayList<CommentsModel> comments = new ArrayList<>();
+    public ArrayList<CommentsModel> comments = new ArrayList<>();
     private LayoutInflater mInflater;
     int ticketID;
     private Context c;
@@ -43,7 +43,9 @@ public class CommentAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
+    public int getCommentID(int position) {
+        return comments.get(position).CommentID;
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -52,8 +54,9 @@ public class CommentAdapter extends BaseAdapter {
         TextView tvComment = v.findViewById(R.id.txtComment);
         TextView tvCommentID = v.findViewById(R.id.txtCommentID);
         tvComment.setText(comments.get(position).CommentDescription);
-        tvComment.setText(comments.get(position).CommentID);
-        tvComment.setVisibility(View.INVISIBLE);
+        tvCommentID.setText(""+comments.get(position).CommentID);
+        tvCommentID.setVisibility(View.INVISIBLE);
+
         return v;
     }
 }
