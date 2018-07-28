@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="loginButton">#7f0000</color>
+    <color name="loginForm">#ff4c4c</color>
 </resources>

@@ -206,4 +206,24 @@ public class DBAccess {
         }
         return comments;
     }
+
+    public boolean FindAndLoginUser(String username, String password) throws SQLException {
+boolean validUser = false;
+        Object[] params = new  Object[] {
+              username,
+            password
+        };
+        outerResultSet = DBHelper.SelectPara("uspLogin", params);
+        if (outerResultSet.next()==false){
+            validUser = false;
+        }else{
+      User.RefID = outerResultSet.getInt("RefID");
+      User.RefFullName = outerResultSet.getString("RefFullName");
+      User.RefEmail = outerResultSet.getString("RefEmail");
+      User.RefPassword = outerResultSet.getString("RefPassword");
+        validUser= true;
+        }
+        DBHelper.Close();
+        return  validUser;
+    }
 }
