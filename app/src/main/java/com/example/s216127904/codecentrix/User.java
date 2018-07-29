@@ -5,4 +5,5 @@ public  class User {
     public static String RefFullName;
     public  static String RefEmail;
     public  static String RefPassword;
+
 }

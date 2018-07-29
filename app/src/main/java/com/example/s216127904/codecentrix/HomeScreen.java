@@ -57,7 +57,7 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent groupDetails = new Intent(getApplicationContext(), ScrollingActivity.class);
+                Intent groupDetails = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(groupDetails);
                 finish();
             }

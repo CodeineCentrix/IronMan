@@ -207,24 +207,22 @@ public class DBAccess {
         return comments;
     }
 
-    public boolean FindAndLoginUser(String username, String password) throws SQLException {
-boolean validUser = false;
+    public User FindAndLoginUser(String username, String password) throws SQLException {
+        boolean validUser = false;
+        User ref = new User();
         Object[] params = new  Object[] {
               username,
             password
         };
         outerResultSet = DBHelper.SelectPara("uspLogin", params);
-        if (outerResultSet.next()==false){
-            validUser = false;
-        }else{
-      User.RefID = outerResultSet.getInt("RefID");
-      User.RefFullName = outerResultSet.getString("RefFullName");
-      User.RefEmail = outerResultSet.getString("RefEmail");
-      User.RefPassword = outerResultSet.getString("RefPassword");
-        validUser= true;
-        }
+        outerResultSet.next();
+            ref.RefID = outerResultSet.getInt("RefID");
+            ref.RefFullName = outerResultSet.getString("RefFullName");
+            ref.RefEmail = outerResultSet.getString("RefEmail");
+            ref.RefPassword = outerResultSet.getString("RefPassword");
+
         DBHelper.Close();
-        return  validUser;
+        return  ref;
     }
 
     public Boolean AddPenalty(PenaltyModel penalty){
@@ -235,7 +233,9 @@ boolean validUser = false;
                 penalty.RefID,
                 penalty.CommentID,
                 penalty.PenaltyTime,
-                penalty.PenaltyPicturePath
+                penalty.PenaltyPicturePath,
+                penalty.longitude,
+                penalty.latitude
 
         };
         boolean i = DBHelper.NonQuery("uspAddPenalty",paras);

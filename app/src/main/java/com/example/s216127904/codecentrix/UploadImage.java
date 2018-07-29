@@ -50,7 +50,7 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         HttpParams httpRequestParams = getHttpRequestParams();
 
        HttpClient client = new DefaultHttpClient(httpRequestParams);
-        HttpPost post = new HttpPost("http://sict-iis.nmmu.ac.za/codecentrix/IronMan/" + "SavePicture.php");
+        HttpPost post = new HttpPost("http://sict-iis.nmmu.ac.za/codecentrix/IronMan/SavePicture.php");
         try {
              post.setEntity(new UrlEncodedFormEntity(dataToSend));
              client.execute(post);

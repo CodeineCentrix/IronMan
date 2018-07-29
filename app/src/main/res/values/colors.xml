@@ -3,7 +3,7 @@
     <color name="colorPrimary">#FF0000</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#311515</color>
-    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhite">#e4dfdf</color>
     <color name="loginButton">#7f0000</color>
     <color name="loginForm">#ff4c4c</color>
     <color name="red" >#ec0606</color>

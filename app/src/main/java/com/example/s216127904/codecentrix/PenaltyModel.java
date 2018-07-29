@@ -19,7 +19,8 @@ public class PenaltyModel {
     public String PenaltyLocation ;
     public Date PenaltyDate;
     public Time PenaltyTime;
-
+    public Double longitude;
+    public Double latitude;
 
     public  void sendImageToServer(Bitmap imageToUpload) throws IOException {
         //Quickly give the predicted path
@@ -29,6 +30,15 @@ public class PenaltyModel {
         //now send the actual image to the database...
         Bitmap image = imageToUpload;
         new UploadImage(image, uploadImageName).execute();
+    }
+    public  void ClearPenalty()  {
+         CommentID = 0;
+         TentID = 0;
+         RacerID = 0;
+         TicketID = 0;
+         PenaltyPicturePath  = null;
+         longitude = null;
+         latitude = null;
     }
 
 }

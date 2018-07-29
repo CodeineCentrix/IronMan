@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ScrollingActivity"
-    tools:showIn="@layout/activity_scrolling">
+    tools:showIn="@layout/activity_scrolling"
+    android:layout_alignParentBottom="true">
 
 
     <LinearLayout
@@ -18,11 +19,9 @@
         <ImageView
             android:id="@+id/imgRacer"
             android:layout_width="match_parent"
-            android:layout_height="196dp"
+            android:layout_height="451dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="17dp"
             app:layout_constraintBottom_toTopOf="@+id/btnTakePic"
@@ -44,8 +43,11 @@
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="193dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="24dp"
+            android:background="#e4dfdf"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,10 +56,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.795">
 
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enter_racer_details"
+                android:textAllCaps="true"
+                android:textSize="18sp"
+                android:textStyle="bold|italic" />
+
             <EditText
                 android:id="@+id/txtRacerNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:ems="10"
                 android:hint="@string/enter_racer_number"
                 android:inputType="number"
@@ -67,6 +80,8 @@
                 android:id="@+id/txtRacerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
                 android:ems="10"
                 android:hint="@string/enter_racer_name"
                 android:inputType="textPersonName"
@@ -76,13 +91,19 @@
                 android:id="@+id/tvCards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="Select a Card"
-                android:textSize="18sp" />
+                android:textAllCaps="true"
+                android:textIsSelectable="false"
+                android:textSize="18sp"
+                android:textStyle="bold|italic" />
 
             <RadioGroup
                 android:id="@+id/rgColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
                 tools:layout_editor_absoluteX="37dp"
                 tools:layout_editor_absoluteY="253dp">
@@ -121,6 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textSize="18sp"
                 tools:text="@string/blue" />
@@ -134,30 +156,39 @@
             <TextView
                 android:id="@+id/tvCards2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
                 android:text="Select a Tent"
-                android:textSize="18sp" />
+                android:textAllCaps="true"
+                android:textSize="18sp"
+                android:textStyle="bold|italic" />
 
             <RadioGroup
+                android:id="@+id/rgTent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/rdTent1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:text="Tent 1"
-                    android:onClick="onRadioButtonClicked" />
+                    android:onClick="onTentClicked"
+                    android:text="@string/tent_1"
+                    android:textSize="18sp" />
 
                 <RadioButton
                     android:id="@+id/rdTent2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:text="Tent 2"
-                    android:onClick="onRadioButtonClicked"/>
+                    android:onClick="onTentClicked"
+                    android:text="@string/tent_2"
+                    android:textSize="18sp" />
             </RadioGroup>
 
         </LinearLayout>
@@ -167,20 +198,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
+            android:onClick="ToSavePenalty"
             android:text="Save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-            android:onClick="ToSavePenalty"/>
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-        <ImageView
-            android:id="@+id/imgMap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ironman_sa" />
     </LinearLayout>
 
 

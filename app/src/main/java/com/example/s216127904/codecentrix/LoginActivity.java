@@ -44,7 +44,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
+    ProgressDialog progressDialog;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
 
             //Add bigger spinner
-            final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+            progressDialog = new ProgressDialog(LoginActivity.this,
                     R.style.Theme_AppCompat_Dialog);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Authenticating...");
@@ -171,10 +171,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
            boolean grantAccess=  mAuthTask.doInBackground();
 
            if (grantAccess){
-               Intent penaltySession = new Intent(getApplicationContext(), GroupDetails.class);
+               progressDialog.dismiss();
+               Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
                startActivity(penaltySession);
                finish();
-           }else {
+           }else  if (grantAccess==false){
 
            }
         }
@@ -286,11 +287,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-           boolean isValidUser;
-            showProgress(true);
+            boolean isValidUser;
+            showProgress(false);
             try {
                 DBAccess database = new DBAccess();
-                isValidUser=  database.FindAndLoginUser(mEmail,mPassword);
+                User ref =  database.FindAndLoginUser(mEmail,mPassword);
+                GeneralMethods m = new GeneralMethods(getApplicationContext());
+                m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
+                isValidUser = ref.RefID>0;
             } catch (Exception a ) {
                 return false;
             }
@@ -304,12 +308,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
            // showProgress(false);
 
             if (success) {
+
                 finish();
             } else {
-                showProgress(false);
+                progressDialog.dismiss();
 
-                Intent showMain = new Intent(getApplicationContext(),RecordPenalty.class);
-                startActivity(showMain);
+//                Intent showMain = new Intent(getApplicationContext(),ScrollingActivity.class);
+//                startActivity(showMain);
 
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
