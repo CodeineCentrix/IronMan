@@ -13,6 +13,12 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import ViewModel.CommentsModel;
+import ViewModel.PenaltyModel;
+import ViewModel.RacerModel;
+import ViewModel.TicketModel;
+import ViewModel.User;
+
 public class DBAccess {
 
     private ResultSet outerResultSet;
@@ -205,6 +211,24 @@ public class DBAccess {
             e.printStackTrace();
         }
         return comments;
+    }
+    public ArrayList<RacerModel> GetAllRacerers() {
+        ArrayList<RacerModel> racerModels = new ArrayList<>();
+        outerResultSet = DBHelper.Select("uspGetAllRacerers");
+        try {
+
+            while (outerResultSet.next()){
+                RacerModel Racer = new RacerModel();
+                Racer.RacerID = outerResultSet.getInt("RacerID");
+                Racer.RacerName = outerResultSet.getString("RacerName");
+                Racer.RacerSurname = outerResultSet.getString("RacerSurname");
+                racerModels.add(Racer);
+            }
+            DBHelper.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return racerModels;
     }
 
     public User FindAndLoginUser(String username, String password) throws SQLException {

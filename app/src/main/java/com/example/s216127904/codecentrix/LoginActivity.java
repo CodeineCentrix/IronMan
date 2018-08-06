@@ -1,16 +1,11 @@
 package com.example.s216127904.codecentrix;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -27,18 +22,18 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import ViewModel.User;
 
 /**
  * A login screen that offers login via email/password.
@@ -67,12 +62,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private ProgressBar mProgressView;
     private View mLoginFormView;
-
+    private CheckBox cbRemeber;
+    private GeneralMethods m;
+    String[] details;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        cbRemeber = findViewById(R.id.cbRemeber);
+        m = new GeneralMethods(getApplicationContext());
         mEmailView = (AutoCompleteTextView) findViewById(R.id.input_email);
         mPasswordView = (EditText) findViewById(R.id.input_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -92,6 +91,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             }
         });
+        RemeberMe();
+        if(cbRemeber.isChecked()){
+            details = m.Read("user.txt",",");
+            mEmailView.setText(details[2]);
+            mPasswordView.setText(details[3]);
+        }
 
         mLoginFormView = findViewById(R.id.login_form);
 
@@ -163,7 +168,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     R.style.Theme_AppCompat_Dialog);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Authenticating...");
-            progressDialog.show();
+            if(mEmailView.getContext() != null ) {
+            //    progressDialog.show(); // if fragment use getActivity().isFinishing() or isAdded() method
+            }
             //End big spinner
             Context c = getApplicationContext();
             mAuthTask = new UserLoginTask(email, password, c,mProgressView);
@@ -171,13 +178,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
            boolean grantAccess=  mAuthTask.doInBackground();
 
            if (grantAccess){
-               progressDialog.dismiss();
+              // progressDialog.dismiss();
                Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
                startActivity(penaltySession);
-               finish();
+
            }else  if (grantAccess==false){
 
            }
+        }
+    }
+
+    public void RemeberMe(String answ){
+        m.writeToFile(answ,"Remember.txt");
+    }
+    public void RemeberMe(){
+        if(m.readFromFile("Remember.txt").equals("yes"))
+            cbRemeber.setChecked(true);
+        else
+            cbRemeber.setChecked(false);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 
@@ -207,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             }else
             {
-                mProgressView.setVisibility(View.INVISIBLE);
+                mProgressView.setVisibility(View.GONE);
 
             }
 
@@ -247,16 +272,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    /*private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }*/
-
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -288,12 +303,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             boolean isValidUser;
-            showProgress(false);
             try {
+
                 DBAccess database = new DBAccess();
                 User ref =  database.FindAndLoginUser(mEmail,mPassword);
                 GeneralMethods m = new GeneralMethods(getApplicationContext());
                 m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
+                if(cbRemeber.isChecked())
+                    RemeberMe("yes");
+                else
+                    RemeberMe("no");
                 isValidUser = ref.RefID>0;
             } catch (Exception a ) {
                 return false;
@@ -303,19 +322,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
+        protected void onPreExecute() {
+            progressDialog.show();
+            
+        }
+
+        @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-           // showProgress(false);
 
+            progressDialog.dismiss();
             if (success) {
 
                 finish();
             } else {
-                progressDialog.dismiss();
-
 //                Intent showMain = new Intent(getApplicationContext(),ScrollingActivity.class);
 //                startActivity(showMain);
-
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

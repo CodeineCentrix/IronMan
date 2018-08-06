@@ -1,7 +1,9 @@
-package com.example.s216127904.codecentrix;
+package ViewModel;
 
 import android.graphics.Bitmap;
 import android.widget.ImageView;
+
+import com.example.s216127904.codecentrix.UploadImage;
 
 import java.io.IOException;
 import java.sql.Time;

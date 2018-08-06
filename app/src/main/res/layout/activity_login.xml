@@ -32,23 +32,24 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textColorHint="@color/colorWhite"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/round_shape"
+            android:textColorHint="@color/colorWhite">
 
-            >
-            <AutoCompleteTextView android:id="@+id/input_email"
+            <AutoCompleteTextView
+                android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email"
-                android:textColorHint="@color/colorWhite"
-                android:textColor="@color/colorWhite"
-                android:shadowColor="@color/colorWhite"
-                android:textColorHighlight="@color/colorWhite"
-                android:textColorLink="@color/colorWhite"
+                android:backgroundTint="@color/colorAccent"
                 android:focusable="true"
-                android:backgroundTint="@color/colorWhite"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:shadowColor="@color/colorAccent"
+                android:textColor="@color/colorAccent"
+                android:textColorHighlight="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textColorLink="@color/colorAccent"
 
                 />
         </android.support.design.widget.TextInputLayout>
@@ -57,38 +58,40 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textColorHint="@color/colorWhite"
-            android:backgroundTint="@color/colorWhite"
-            >
+            android:layout_marginTop="8dp"
+            android:background="@drawable/round_shape"
+            android:textColorHint="@color/colorWhite">
 
             <EditText
                 android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorAccent"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:shadowColor="@color/colorWhite"
-                android:textColor="@color/colorWhite"
-                android:textColorHint="@color/colorWhite"
-                android:textColorLink="@color/colorWhite"
-                tools:textColorLink="@color/colorWhite"
-                android:backgroundTint="@color/colorWhite"
-                />
+                android:shadowColor="@color/colorAccent"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textColorLink="@color/colorAccent" />
         </android.support.design.widget.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/cbRemeber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CheckBox" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/loginButton"
             android:padding="12dp"
             android:text="Login"
-            android:background="@color/loginButton"
-            android:textColor="@color/colorWhite"
-            />
+            android:textColor="@color/colorWhite" />
 
         <ProgressBar
             android:id="@+id/login_progress"
@@ -96,10 +99,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:indeterminateTintMode="src_atop"
             android:indeterminateTint="@color/colorWhite"
-            android:visibility="invisible"
-            />
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone" />
 
 
     </LinearLayout>

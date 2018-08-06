@@ -1,4 +1,4 @@
-package com.example.s216127904.codecentrix;
+package ViewModel;
 
 public  class User {
     public  static int RefID;

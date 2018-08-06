@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ViewModel.CommentsModel;
+
 public class CommentAdapter extends BaseAdapter {
 
     public ArrayList<CommentsModel> comments = new ArrayList<>();

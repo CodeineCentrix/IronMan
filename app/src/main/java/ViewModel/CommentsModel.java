@@ -1,4 +1,4 @@
-package com.example.s216127904.codecentrix;
+package ViewModel;
 
 public class CommentsModel {
     public int CommentID;
