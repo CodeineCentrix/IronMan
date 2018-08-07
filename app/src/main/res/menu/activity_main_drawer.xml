@@ -14,17 +14,14 @@
 
             android:title="Theme" />
         <item
-            android:id="@+id/nav_Contacts"
-
-            android:title="Contacts" />
-        <item
-            android:id="@+id/nav_Rules"
-
-            android:title="Rules" />
-        <item
             android:id="@+id/nav_Help"
 
             android:title="Help" />
+        <item
+            android:id="@+id/nav_SignOut"
+
+            android:title="@string/sing_out" />
+
 
     </group>
 

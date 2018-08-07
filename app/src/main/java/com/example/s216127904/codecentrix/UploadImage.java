@@ -42,7 +42,7 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
-
+        name = "anthi";
         ArrayList<NameValuePair> dataToSend = new ArrayList<>();
         dataToSend.add( new BasicNameValuePair("image",encodedImage));
         dataToSend.add(new BasicNameValuePair("name",name ));
@@ -50,13 +50,16 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         HttpParams httpRequestParams = getHttpRequestParams();
 
        HttpClient client = new DefaultHttpClient(httpRequestParams);
-        HttpPost post = new HttpPost("http://sict-iis.nmmu.ac.za/codecentrix/IronMan/SavePicture.php");
+        HttpPost post = new HttpPost("http://sict-iis.nmmu.ac.za/codecentrix/MobileConnectionString/SavePicture.php");
         try {
              post.setEntity(new UrlEncodedFormEntity(dataToSend));
              client.execute(post);
         }catch (Exception a ){
             a.printStackTrace();
         }
+
+
+
         return null;
     }
 

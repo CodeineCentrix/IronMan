@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import android.support.v7.app.AppCompatActivity;
@@ -55,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -70,6 +71,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.Theme_AppCompat_Dialog);
         cbRemeber = findViewById(R.id.cbRemeber);
         m = new GeneralMethods(getApplicationContext());
         mEmailView = (AutoCompleteTextView) findViewById(R.id.input_email);
@@ -77,8 +80,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-
-                return false;
+                return  true;
             }
         });
 
@@ -86,11 +88,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProgressView = findViewById(R.id.login_progress);
-                attemptLogin();
-
+                progressDialog.show();
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                      attemptLogin();
+                    }
+                });
             }
+
         });
+
         RemeberMe();
         if(cbRemeber.isChecked()){
             details = m.Read("user.txt",",");
@@ -101,10 +110,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
 
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
 
-
-
-
+    }
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -122,28 +135,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
-
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
         boolean cancel = false;
         View focusView = null;
-
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -164,30 +169,42 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
 
             //Add bigger spinner
-            progressDialog = new ProgressDialog(LoginActivity.this,
-                    R.style.Theme_AppCompat_Dialog);
+
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Authenticating...");
             if(mEmailView.getContext() != null ) {
             //    progressDialog.show(); // if fragment use getActivity().isFinishing() or isAdded() method
             }
             //End big spinner
-            Context c = getApplicationContext();
-            mAuthTask = new UserLoginTask(email, password, c,mProgressView);
-            mAuthTask.execute();
-           boolean grantAccess=  mAuthTask.doInBackground();
+           Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    boolean isValidUser =false;
+                    try {
+                        DBAccess database = new DBAccess();
+                        User ref =  database.FindAndLoginUser(email,password);
+                        GeneralMethods m = new GeneralMethods(getApplicationContext());
+                        m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
+                        if(cbRemeber.isChecked())
+                            RemeberMe("yes");
+                        else
+                            RemeberMe("no");
+                        isValidUser = ref.RefID>0;
+                    } catch (Exception a ) {
+                        a.printStackTrace();
+                    }
+                    if (isValidUser){
+                        Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
+                        startActivity(penaltySession);
+                    }
+                }
 
-           if (grantAccess){
-              // progressDialog.dismiss();
-               Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
-               startActivity(penaltySession);
+            });
 
-           }else  if (grantAccess==false){
 
-           }
         }
     }
-
     public void RemeberMe(String answ){
         m.writeToFile(answ,"Remember.txt");
     }
@@ -197,25 +214,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         else
             cbRemeber.setChecked(false);
     }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
-
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
     }
-
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
     }
-
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -229,15 +235,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // and hide the relevant UI components.
             if (show) {
                 mProgressView.setVisibility(View.VISIBLE);
-
-            }else
-            {
+            }else{
                 mProgressView.setVisibility(View.GONE);
-
             }
 
     }
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -254,7 +256,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // a primary email address if the user hasn't specified one.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
-
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -266,12 +267,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     }
-
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -281,69 +280,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-        private Context c;
-        private  ProgressBar br;
-        UserLoginTask(String email, String password, Context a, ProgressBar bar) {
-            mEmail = email;
-            mPassword = password;
-            c = a;
-            br= bar;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            boolean isValidUser;
-            try {
-
-                DBAccess database = new DBAccess();
-                User ref =  database.FindAndLoginUser(mEmail,mPassword);
-                GeneralMethods m = new GeneralMethods(getApplicationContext());
-                m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
-                if(cbRemeber.isChecked())
-                    RemeberMe("yes");
-                else
-                    RemeberMe("no");
-                isValidUser = ref.RefID>0;
-            } catch (Exception a ) {
-                return false;
-            }
-
-            return isValidUser;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog.show();
-            
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-
-            progressDialog.dismiss();
-            if (success) {
-
-                finish();
-            } else {
-//                Intent showMain = new Intent(getApplicationContext(),ScrollingActivity.class);
-//                startActivity(showMain);
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-
-    }
 }
 

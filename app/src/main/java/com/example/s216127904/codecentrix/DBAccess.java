@@ -53,8 +53,8 @@ public class DBAccess {
 
         private static void Close() {
             try {
-                innerResultSet.close();
-                st.close();
+                innerResultSet=null;
+                st = null;
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -153,26 +153,6 @@ public class DBAccess {
             }
         }
     }
-
-//    public PersonModel LoginPerson(PersonModel person){
-//        //this object acts like a sqlparameter like in c#
-//        Object[] paras = {person.email,person.userPassword};
-//        //pass the stored procedure name and the paras if you have parameter
-//        outerResultSet = DBHelper.SelectPara("uspMobGetPerson",paras);
-//        //the is alot that could go wrong when trying to connect to the database that is why the is a try catch
-//        try{
-//            //the outerResulSet is the table returned from the execution of the stored procedure
-//            outerResultSet.next();//Moves from row of Heading to row record
-//            person.id = outerResultSet.getInt("PersonID");//you need to specify not only the colunm name but also the data type to be return
-//            person.fullName = outerResultSet.getString("FullName");
-//            person.email = outerResultSet.getString("Email");
-//            person.userPassword = outerResultSet.getString("UserPassword");
-//            DBHelper.Close();//to closes the connection
-//        }catch (SQLException e){
-//            e.printStackTrace();// I propable should inform the user
-//        }
-//        return person;
-//    }
 
     public TicketModel GetTickets() {
         //this object acts like a sqlparameter like in c#

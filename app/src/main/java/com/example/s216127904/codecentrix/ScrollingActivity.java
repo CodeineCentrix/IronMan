@@ -9,6 +9,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -28,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -72,17 +75,15 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     private Toolbar toolbar;
     private DrawerLayout drawer;
     NavigationView navigationView;
+    LinearLayout loImage;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SetUpControllers();
-        business = new DBAccess();
-        comments = business.GetComments();
-        racers = business.GetAllRacerers();
         generalMethods = new GeneralMethods(getApplicationContext());
         requestPermission();
-        getLoction();
+
         txtRacerNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -111,13 +112,21 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                business = new DBAccess();
+                comments = business.GetComments();
+                racers = business.GetAllRacerers();
+            }
+        });
     }
     public void onTakePicture(View view){
-       //Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-       //startActivityForResult(showCamera, 10);
-       BackGroundConnection b = new BackGroundConnection();
-       String[] i = b.conntion();
-       String c = i[i.length-1];
+       Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+       startActivityForResult(showCamera, 10);
 
     }
     @Override
@@ -125,7 +134,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 10) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                getLoction();
             }
         }
     }
@@ -196,6 +205,13 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         if(requestCode==10 && data!=null){
             bitmapImage = (Bitmap) data.getExtras().get("data");
             imgRacer.setImageBitmap(bitmapImage);
+            try {
+                penalty.sendImageToServer(bitmapImage);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+            loImage.setVisibility(navigationView.VISIBLE);
         }
     }
     public void showDialog(View view, int ticketID) {
@@ -279,6 +295,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         }
     }
     public void ClearText(){
+        loImage.setVisibility(View.GONE);
         txtRacerName.setText("");
         txtRacerNumber.setText("");
         tvComment.setVisibility(View.GONE);
@@ -290,6 +307,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         imgRacer.setImageBitmap(downLoadPicture.doInBackground());
     }
     public void SetUpControllers(){
+        loImage = findViewById(R.id.loImage);
         txtRacerNumber = findViewById(R.id.txtRacerNumber);
         txtRacerName = findViewById(R.id.txtRacerName);
         rdBlue = findViewById(R.id.rdBlue);
@@ -366,19 +384,21 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         int id = item.getItemId();
 
         if (id == R.id.nav_Map) {
-
+            Intent ShowMap = new Intent(this,Map.class);
+            startActivity(ShowMap);
         } else if (id == R.id.nav_Theme) {
 
         } else if (id == R.id.nav_Help) {
 
-        } else if (id == R.id.nav_Contacts) {
-
-        } else if (id == R.id.nav_Rules) {
-
+        } else if (id == R.id.nav_SignOut) {
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public void ClearImage(View view){
+        loImage.setVisibility(View.GONE);
     }
 }
