@@ -163,6 +163,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+            progressDialog.dismiss();
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
@@ -197,6 +198,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (isValidUser){
                         Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
                         startActivity(penaltySession);
+                    }
+                    else {
+                        progressDialog.dismiss();
+                        Toast.makeText(cbRemeber.getContext(),"Invalid user",Toast.LENGTH_SHORT).show();
                     }
                 }
 
