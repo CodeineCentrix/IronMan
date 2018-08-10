@@ -123,6 +123,27 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
                 racers = business.GetAllRacerers();
             }
         });
+        SetHeader();
+    }
+    public void SetHeader()
+    {
+        String[] details = generalMethods.Read("user.txt",",");
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+
+        View header = navigationView.getHeaderView(0);
+//        ImageView profile = header.findViewById(R.id.nav_imgIcon);
+//        try {
+//            //  DownLoadPicture d = new DownLoadPicture("meter");
+//            //  profile.setImageBitmap(d.doInBackground());
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+        TextView tvFullName = (TextView) header.findViewById(R.id.navUserName);
+        TextView tvEmail = header.findViewById(R.id.navEmail);
+        tvEmail.setText(details[2]);
+        tvFullName.setText(details[1]);
+        navigationView.setNavigationItemSelectedListener(this);
     }
     public void onTakePicture(View view){
        Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

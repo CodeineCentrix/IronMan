@@ -42,7 +42,6 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
-        name = "anthi";
         ArrayList<NameValuePair> dataToSend = new ArrayList<>();
         dataToSend.add( new BasicNameValuePair("image",encodedImage));
         dataToSend.add(new BasicNameValuePair("name",name ));

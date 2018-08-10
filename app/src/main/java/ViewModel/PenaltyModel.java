@@ -28,7 +28,7 @@ public class PenaltyModel {
         //Quickly give the predicted path
 
         PenaltyPicturePath = "http://sict-iis.nmmu.ac.za/codecentrix/IronMan/pictures/"+ "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
-        String uploadImageName= "";
+        String uploadImageName= "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
         //now send the actual image to the database...
         Bitmap image = imageToUpload;
         new UploadImage(image, uploadImageName).execute();
