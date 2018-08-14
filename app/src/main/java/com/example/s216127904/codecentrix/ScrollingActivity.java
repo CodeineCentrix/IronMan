@@ -226,12 +226,6 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         if(requestCode==10 && data!=null){
             bitmapImage = (Bitmap) data.getExtras().get("data");
             imgRacer.setImageBitmap(bitmapImage);
-            try {
-                penalty.sendImageToServer(bitmapImage);
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-
             loImage.setVisibility(navigationView.VISIBLE);
         }
     }

@@ -30,8 +30,7 @@ public class PenaltyModel {
         PenaltyPicturePath = "http://sict-iis.nmmu.ac.za/codecentrix/IronMan/pictures/"+ "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
         String uploadImageName= "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
         //now send the actual image to the database...
-        Bitmap image = imageToUpload;
-        new UploadImage(image, uploadImageName).execute();
+        new UploadImage(imageToUpload, uploadImageName).execute();
     }
     public  void ClearPenalty()  {
          CommentID = 0;
