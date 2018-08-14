@@ -39,14 +39,12 @@ public class Map extends AppCompatActivity {
     }
     public class DownLoadPicture extends AsyncTask<Void, Void, Bitmap> {
         String name;
-
         public DownLoadPicture(String name) {
             if (name == null) {
                 name = "icon/map";
             }
             this.name = name;
         }
-
         @Override
         protected Bitmap doInBackground(Void... voids) {
             String login_url = "http://sict-iis.nmmu.ac.za/codecentrix/MobileConnectionString/" + name.trim() + ".png";
