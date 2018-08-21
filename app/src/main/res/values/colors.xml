@@ -9,4 +9,5 @@
     <color name="red" >#ec0606</color>
     <color name="yellow" >#ffde04</color>
     <color name="blue" >#06a3ec</color>
+    <color name="background" >#e2ecf1</color>
 </resources>

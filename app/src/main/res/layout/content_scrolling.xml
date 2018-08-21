@@ -14,7 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -51,8 +55,7 @@
                 android:ems="10"
                 android:hint="@string/enter_racer_number"
                 android:inputType="number"
-                android:textSize="18sp"
-                />
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/txtRacerName"
@@ -160,8 +163,7 @@
                     android:layout_weight="1"
                     android:onClick="onTentClicked"
                     android:text="@string/tent_1"
-                    android:textSize="18sp"
-                    android:background="@drawable/round_shape"/>
+                    android:textSize="18sp" />
 
                 <RadioButton
                     android:id="@+id/rdTent2"
@@ -171,9 +173,9 @@
                     android:layout_weight="1"
                     android:onClick="onTentClicked"
                     android:text="@string/tent_2"
-                    android:textSize="18sp"
-                    android:background="@drawable/round_shape"/>
+                    android:textSize="18sp" />
             </RadioGroup>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -200,47 +202,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="onTakePicture"
                     android:text="Take Picture"
                     app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:onClick="onTakePicture"
-                    />
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:id="@+id/imgRacer"
+                    android:layout_width="match_parent"
+                    android:layout_height="451dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
+                <Button
+                    android:id="@+id/btnBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:onClick="ClearImage"
+                    android:text="@string/back"
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
 
 
-        <LinearLayout
-            android:id="@+id/loImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/imgRacer"
-                android:layout_width="match_parent"
-                android:layout_height="451dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="17dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnTakePic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@mipmap/ic_launcher" />
-
-            <Button
-                android:id="@+id/btnBack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/back"
-                android:onClick="ClearImage"/>
-        </LinearLayout>
 
     </LinearLayout>
-
 
 
 

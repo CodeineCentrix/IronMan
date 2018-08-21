@@ -135,6 +135,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="sing_out">Sign Out</string>
-    <string name="back">Back</string>
+    <string name="back">Close</string>
     <string name="remember_passwor">Remember password</string>
+    <string name="title_activity_test">test</string>
 </resources>

@@ -396,8 +396,6 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         if (id == R.id.nav_Map) {
             Intent ShowMap = new Intent(this,Map.class);
             startActivity(ShowMap);
-        } else if (id == R.id.nav_Theme) {
-
         } else if (id == R.id.nav_Help) {
 
         } else if (id == R.id.nav_SignOut) {

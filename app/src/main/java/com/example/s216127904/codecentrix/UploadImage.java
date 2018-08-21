@@ -45,9 +45,7 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         ArrayList<NameValuePair> dataToSend = new ArrayList<>();
         dataToSend.add( new BasicNameValuePair("image",encodedImage));
         dataToSend.add(new BasicNameValuePair("name",name ));
-
         HttpParams httpRequestParams = getHttpRequestParams();
-
        HttpClient client = new DefaultHttpClient(httpRequestParams);
         HttpPost post = new HttpPost("http://sict-iis.nmmu.ac.za/codecentrix/MobileConnectionString/SavePicture.php");
         try {
@@ -56,8 +54,6 @@ public class UploadImage extends AsyncTask<Void,Void, Void> {
         }catch (Exception a ){
             a.printStackTrace();
         }
-
-
 
         return null;
     }

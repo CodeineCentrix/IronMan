@@ -9,10 +9,7 @@
             android:id="@+id/nav_Map"
 
             android:title="Map" />
-        <item
-            android:id="@+id/nav_Theme"
 
-            android:title="Theme" />
         <item
             android:id="@+id/nav_Help"
 
