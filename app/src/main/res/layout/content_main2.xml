@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_main2">
 
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/imgMap"
         android:layout_width="0dp"
         android:layout_height="0dp"

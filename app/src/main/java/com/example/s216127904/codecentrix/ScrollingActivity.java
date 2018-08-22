@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -56,7 +55,6 @@ import ViewModel.PenaltyModel;
 import ViewModel.RacerModel;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.PERSISTENT_ACTIVITY;
 
 public class ScrollingActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     private ImageView imgRacer;
@@ -74,8 +72,9 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     private ArrayList<RacerModel> racers;
     private Toolbar toolbar;
     private DrawerLayout drawer;
+    private Button btnSave;
     NavigationView navigationView;
-    LinearLayout loImage;
+    LinearLayout loImage, loHideCards;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -102,6 +101,13 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
                  int num = Integer.parseInt(s.toString());
                  String name =  binarySearch(racers,0,racers.size()-1,num);
                  txtRacerName.setText(name);
+                 if(name.equals("")) {
+                     loHideCards.setVisibility(View.GONE);
+                     btnSave.setEnabled(false);
+                 }else{
+                     loHideCards.setVisibility(View.VISIBLE);
+                     btnSave.setEnabled(true);
+                }
                }
             }
         });
@@ -250,7 +256,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 penalty.CommentID = listAdapter.getCommentID(position);//////////////////////////////////////////////////
                 tvComment = findViewById(R.id.tvComment);
-                tvComment.setText(listAdapter.comments.get(position).CommentDescription);
+                tvComment.setText("SELECTED COMMENT:\n "+listAdapter.comments.get(position).CommentDescription);
                 tvComment.setVisibility(View.VISIBLE);
                 dialog.dismiss();
             }
@@ -318,6 +324,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         tentGroup.clearCheck();
         RadioGroup cardGroup = findViewById(R.id.rgColor);
         cardGroup.clearCheck();
+        loHideCards.setVisibility(View.GONE);
         penalty.ClearPenalty();
         imgRacer.setImageBitmap(downLoadPicture.doInBackground());
     }
@@ -333,6 +340,8 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         imgRacer = findViewById(R.id.imgRacer);
         toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
+        loHideCards = findViewById(R.id.loHideCards);
+        btnSave = findViewById(R.id.btnSave);
         navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
         rdBlue.setBackgroundColor(getResources().getColor(R.color.blue));

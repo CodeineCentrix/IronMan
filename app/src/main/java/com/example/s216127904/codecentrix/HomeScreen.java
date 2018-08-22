@@ -24,8 +24,10 @@ public class HomeScreen extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
 
         loadBar = findViewById(R.id.progressBar4);
+        Intent groupDetails = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(groupDetails);
+        finish();
 
-        Timer(3000);
     }
     public void Timer(int duration){
         new Thread(new Runnable() {

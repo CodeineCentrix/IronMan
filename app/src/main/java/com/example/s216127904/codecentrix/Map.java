@@ -9,8 +9,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -24,18 +27,16 @@ public class Map extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        ImageView imgMap = findViewById(R.id.imgMap);
+        //code for back button
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        PhotoView imgMap =(PhotoView) findViewById(R.id.imgMap);
         DownLoadPicture downLoadPicture = new DownLoadPicture(null);
         imgMap.setImageBitmap(downLoadPicture.doInBackground());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btnBack);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               finish();
-            }
-        });
+        imgMap.setAdjustViewBounds(true);
     }
     public class DownLoadPicture extends AsyncTask<Void, Void, Bitmap> {
         String name;
@@ -61,5 +62,11 @@ public class Map extends AppCompatActivity {
             }
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+            finish();
+            return super.onOptionsItemSelected(item);
     }
 }

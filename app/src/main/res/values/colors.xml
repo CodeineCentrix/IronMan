@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff0000</color>
+    <color name="colorPrimary">#f44336</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#311515</color>
+    <color name="colorAccent">#b71c1c</color>
     <color name="colorWhite">#e4dfdf</color>
     <color name="loginButton">#7f0000</color>
     <color name="loginForm">#ff4c4c</color>
-    <color name="red" >#ec0606</color>
-    <color name="yellow" >#ffde04</color>
-    <color name="blue" >#06a3ec</color>
-    <color name="background" >#e2ecf1</color>
+    <color name="red" >#FF0000</color>
+    <color name="yellow" >#FFFF00</color>
+    <color name="blue" >#00BFFF</color>
+    <color name="background" >#ffebee</color>
 </resources>

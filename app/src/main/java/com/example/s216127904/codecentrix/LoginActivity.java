@@ -108,7 +108,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         mLoginFormView = findViewById(R.id.login_form);
-
+        progressDialog.show();
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                attemptLogin();
+            }
+        });
     }
     @Override
     protected void onStop() {
@@ -214,8 +221,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         m.writeToFile(answ,"Remember.txt");
     }
     public void RemeberMe(){
-        if(m.readFromFile("Remember.txt").equals("yes"))
+        if(m.readFromFile("Remember.txt").equals("yes")) {
             cbRemeber.setChecked(true);
+
+        }
         else
             cbRemeber.setChecked(false);
     }
