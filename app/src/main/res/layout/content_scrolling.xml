@@ -45,6 +45,12 @@
                 android:textAllCaps="true"
                 android:textSize="24sp"
                 android:textStyle="bold|italic" />
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorAccent"/>
 
             <EditText
                 android:id="@+id/txtRacerNumber"
@@ -77,7 +83,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:orientation="vertical"
-            android:background="@drawable/second_round_shape">
+            >
 
             <LinearLayout
                 android:id="@+id/loHideCards"
@@ -86,114 +92,141 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/tvCards"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Select a Card"
-                    android:textAllCaps="true"
-                    android:textIsSelectable="false"
-                    android:textSize="24sp"
-                    android:textStyle="bold|italic" />
-
-                <RadioGroup
-                    android:id="@+id/rgColor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical"
-                    tools:layout_editor_absoluteX="37dp"
-                    tools:layout_editor_absoluteY="253dp">
-
-                    <RadioButton
-                        android:id="@+id/rdBlue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/blue"
-                        android:textSize="18sp" />
-
-                    <RadioButton
-                        android:id="@+id/rbYellow"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/yellow"
-                        android:textSize="18sp" />
-
-                    <RadioButton
-                        android:id="@+id/rdRed"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/red"
-                        android:textSize="18sp" />
-
-                </RadioGroup>
-
-                <TextView
-                    android:id="@+id/tvComment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:text="@string/blue" />
-
-                <TextView
-                    android:id="@+id/tvCommentID"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible" />
-
-                <TextView
-                    android:id="@+id/tvCards2"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Select a Tent"
-                    android:textAllCaps="true"
-                    android:textSize="24sp"
-                    android:textStyle="bold|italic" />
+                    android:background="@drawable/second_round_shape"
+                    android:orientation="vertical">
 
-                <RadioGroup
-                    android:id="@+id/rgTent"
+                    <TextView
+                        android:id="@+id/tvCards"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/select_a_card"
+                        android:textAllCaps="true"
+                        android:textIsSelectable="false"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
+
+                    <View
+
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/colorAccent" />
+
+                    <RadioGroup
+                        android:id="@+id/rgColor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="vertical"
+                        tools:layout_editor_absoluteX="37dp"
+                        tools:layout_editor_absoluteY="253dp">
+
+                        <RadioButton
+                            android:id="@+id/rdBlue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="onRadioButtonClicked"
+                            android:text="@string/blue"
+                            android:textSize="18sp" />
+
+                        <RadioButton
+                            android:id="@+id/rbYellow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="onRadioButtonClicked"
+                            android:text="@string/yellow"
+                            android:textSize="18sp" />
+
+                        <RadioButton
+                            android:id="@+id/rdRed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="onRadioButtonClicked"
+                            android:text="@string/red"
+                            android:textSize="18sp" />
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:id="@+id/tvComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:visibility="gone"
+                        tools:text="@string/blue" />
+
+                    <TextView
+                        android:id="@+id/tvCommentID"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/second_round_shape"
+                    android:orientation="vertical">
 
-                    <RadioButton
-                        android:id="@+id/rdTent1"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tvCards2"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:onClick="onTentClicked"
-                        android:text="@string/tent_1"
-                        android:textSize="18sp" />
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/select_a_tent"
+                        android:textAllCaps="true"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
 
-                    <RadioButton
-                        android:id="@+id/rdTent2"
-                        android:layout_width="wrap_content"
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/colorAccent" />
+
+                    <RadioGroup
+                        android:id="@+id/rgTent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:onClick="onTentClicked"
-                        android:text="@string/tent_2"
-                        android:textSize="18sp" />
-                </RadioGroup>
+                        android:orientation="horizontal">
 
+                        <RadioButton
+                            android:id="@+id/rdTent1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="1"
+                            android:onClick="onTentClicked"
+                            android:text="@string/tent_1"
+                            android:textSize="18sp" />
+
+                        <RadioButton
+                            android:id="@+id/rdTent2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="1"
+                            android:onClick="onTentClicked"
+                            android:text="@string/tent_2"
+                            android:textSize="18sp" />
+                    </RadioGroup>
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -201,7 +234,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@drawable/second_round_shape">
 
                 <Button
                     android:id="@+id/btnSave"
@@ -240,9 +274,9 @@
                 android:visibility="gone">
 
 
-                <ImageView
+                <com.github.chrisbanes.photoview.PhotoView
                     android:id="@+id/imgRacer"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="451dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"

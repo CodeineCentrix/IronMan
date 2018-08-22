@@ -32,7 +32,7 @@
         completions."
     </string>
     <string name="login_header">Iron Man</string>
-    <string name="title_activity_scrolling">PENALTY</string>
+    <string name="title_activity_scrolling">Penalty form</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -128,7 +128,7 @@
     <string name="enter_racer_details">Enter Racer Details</string>
     <string name="tent_1"><![CDATA[<Tent 1 Out]]></string>
     <string name="tent_2"><![CDATA[Tent 2 Back>]]></string>
-    <string name="select_reason">SELECT REASON FOR CARD</string>
+    <string name="select_reason"><u>SELECT REASON FOR CARD</u></string>
     <string name="title_activity_main">MainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -138,4 +138,6 @@
     <string name="back">Close</string>
     <string name="remember_passwor">Remember password</string>
     <string name="title_activity_test">test</string>
+    <string name="select_a_card">Select a Card</string>
+    <string name="select_a_tent">Select a Tent</string>
 </resources>

@@ -55,7 +55,7 @@ public class CommentAdapter extends BaseAdapter {
 
         TextView tvComment = v.findViewById(R.id.txtComment);
         TextView tvCommentID = v.findViewById(R.id.txtCommentID);
-        tvComment.setText("SELECTED COMMENT: "+comments.get(position).CommentDescription);
+        tvComment.setText(comments.get(position).CommentDescription);
         tvCommentID.setText(""+comments.get(position).CommentID);
         tvCommentID.setVisibility(View.INVISIBLE);
 

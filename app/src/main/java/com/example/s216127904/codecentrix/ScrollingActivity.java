@@ -36,6 +36,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,7 +58,7 @@ import ViewModel.RacerModel;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class ScrollingActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
-    private ImageView imgRacer;
+    private PhotoView imgRacer;
     private ArrayList<CommentsModel> comments;
     private DBAccess business;
     private PenaltyModel penalty = new PenaltyModel();
