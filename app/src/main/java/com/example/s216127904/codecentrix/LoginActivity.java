@@ -35,6 +35,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ViewModel.PenaltyModel;
 import ViewModel.User;
 
 /**
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private CheckBox cbRemeber;
     private GeneralMethods m;
     String[] details;
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,13 +111,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         progressDialog.show();
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                attemptLogin();
-            }
-        });
+        attemptLogin();
     }
     @Override
     protected void onStop() {
@@ -184,37 +180,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             //    progressDialog.show(); // if fragment use getActivity().isFinishing() or isAdded() method
             }
             //End big spinner
-           Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    boolean isValidUser =false;
-                    try {
-                        DBAccess database = new DBAccess();
-                        User ref =  database.FindAndLoginUser(email,password);
-                        GeneralMethods m = new GeneralMethods(getApplicationContext());
-                        m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
-                        if(cbRemeber.isChecked())
-                            RemeberMe("yes");
-                        else
-                            RemeberMe("no");
-                        isValidUser = ref.RefID>0;
-                    } catch (Exception a ) {
-                        a.printStackTrace();
-                    }
-                    if (isValidUser){
-                        Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
-                        startActivity(penaltySession);
-                    }
-                    else {
-                        progressDialog.dismiss();
-                        Toast.makeText(cbRemeber.getContext(),"Invalid user",Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-            });
-
-
+            helpThread h = new helpThread(email,password);
+            new Thread(h).start();
         }
     }
     public void RemeberMe(String answ){
@@ -298,6 +265,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
+    class helpThread implements Runnable {
 
+        boolean onCreate;
+        String email,password;
+
+        public helpThread(String email,String password) {
+            this.email =email;
+            this.password = password;
+        }
+        @Override
+        public void run() {
+
+
+            boolean isValidUser =false;
+            try {
+                DBAccess database = new DBAccess();
+                User ref =  database.FindAndLoginUser(email,password);
+                GeneralMethods m = new GeneralMethods(getApplicationContext());
+                m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
+                if(cbRemeber.isChecked())
+                    RemeberMe("yes");
+                else
+                    RemeberMe("no");
+                isValidUser = ref.RefID>0;
+            } catch (Exception a ) {
+                a.printStackTrace();
+            }
+            final boolean finalIsValidUser = isValidUser;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (finalIsValidUser){
+                        Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
+                        startActivity(penaltySession);
+                    }
+                    else {
+                        progressDialog.dismiss();
+                        Toast.makeText(cbRemeber.getContext(),"Invalid user",Toast.LENGTH_SHORT).show();
+                    }
+                    progressDialog.dismiss();
+                }
+
+            });
+        }
+    }
 }
 

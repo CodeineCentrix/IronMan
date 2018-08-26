@@ -1,6 +1,7 @@
 package com.example.s216127904.codecentrix;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -8,11 +9,13 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -23,8 +26,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +83,8 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     private Button btnSave;
     NavigationView navigationView;
     LinearLayout loImage, loHideCards;
+    ProgressDialog progressDialog;
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -83,33 +92,53 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         SetUpControllers();
         generalMethods = new GeneralMethods(getApplicationContext());
         requestPermission();
-
+        progressDialog = new ProgressDialog(ScrollingActivity.this,
+                R.style.Theme_AppCompat_Dialog);
         txtRacerNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-               if(!s.toString().equals(""))
-               if(Double.parseDouble(s.toString())<9999){
-                 int num = Integer.parseInt(s.toString());
-                 String name =  binarySearch(racers,0,racers.size()-1,num);
-                 txtRacerName.setText(name);
-                 if(name.equals("")) {
-                     loHideCards.setVisibility(View.GONE);
-                     btnSave.setEnabled(false);
-                 }else{
-                     loHideCards.setVisibility(View.VISIBLE);
-                     btnSave.setEnabled(true);
+                if(!s.toString().equals(""))
+                    if(Double.parseDouble(s.toString())<9999 && racers!=null){
+                        int num = Integer.parseInt(s.toString());
+                        String name =  binarySearch(racers,0,racers.size()-1,num);
+                        txtRacerName.setText(name);
+                        if(name.equals("")) {
+                            loHideCards.setVisibility(View.GONE);
+                            btnSave.setEnabled(false);
+                        }else{
+                            loHideCards.setVisibility(View.VISIBLE);
+                        }
+                    }else {
+                        txtRacerName.setText("");
+                        loHideCards.setVisibility(View.GONE);
+                    }
+            }
+        });
+        txtRacerName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if(s.toString().equals("")) {
+                    LinearLayout l1 = (LinearLayout) findViewById(R.id.l1);
+                    LinearLayout l2 = (LinearLayout) findViewById(R.id.l2);
+                    Animation upToDown = AnimationUtils.loadAnimation(txtRacerName.getContext(), R.anim.downtoup);
+                    l1.setAnimation(upToDown);
+                    Animation downToUp = AnimationUtils.loadAnimation(txtRacerName.getContext(), R.anim.downtoup);
+                    l2.setAnimation(downToUp);
                 }
-               }
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
         downLoadPicture = new DownLoadPicture(null);
@@ -119,21 +148,14 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
-
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                business = new DBAccess();
-                comments = business.GetComments();
-                racers = business.GetAllRacerers();
-            }
-        });
+        helpThread h = new helpThread(true);
+        new Thread(h).start();
+        LinearLayout l = (LinearLayout) findViewById(R.id.linearLayout);
+        Animation upToDown = AnimationUtils.loadAnimation(this,R.anim.downtoup);
+        l.setAnimation(upToDown);
         SetHeader();
     }
-    public void SetHeader()
-    {
+    public void SetHeader(){
         String[] details = generalMethods.Read("user.txt",",");
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -153,8 +175,8 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         navigationView.setNavigationItemSelectedListener(this);
     }
     public void onTakePicture(View view){
-       Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-       startActivityForResult(showCamera, 10);
+        Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(showCamera, 10);
 
     }
     @Override
@@ -173,6 +195,12 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
+
+        if (this.getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(view.getContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         boolean checked = ((RadioButton) view).isChecked();
         // Check which radio button was clicked
         switch (view.getId()) {
@@ -195,6 +223,13 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     public void onTentClicked(View view) {
         // Is the button now checked?
+        if(txtRacerNumber.isFocused())
+            txtRacerNumber.clearFocus();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            btnSave.setFocusedByDefault(true);
+        }
+        btnSave.setEnabled(true);
+        btnSave.setVisibility(View.VISIBLE);
         boolean checked = ((RadioButton) view).isChecked();
         // Check which radio button was clicked
         switch (view.getId()) {
@@ -246,20 +281,16 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         Button btnBack = commentView.findViewById(R.id.btnBack);
         mBuilder.setView(commentView);
         final AlertDialog dialog = mBuilder.create();
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
+
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 penalty.CommentID = listAdapter.getCommentID(position);//////////////////////////////////////////////////
                 tvComment = findViewById(R.id.tvComment);
                 tvComment.setText("SELECTED COMMENT:\n "+listAdapter.comments.get(position).CommentDescription);
                 tvComment.setVisibility(View.VISIBLE);
                 dialog.dismiss();
+
             }
         });
         dialog.show();
@@ -268,14 +299,14 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         String i = txtRacerNumber.getText().toString();
         int refid;
         try {
-             refid = Integer.parseInt(generalMethods.Read("user.txt", ",")[0]);
+            refid = Integer.parseInt(generalMethods.Read("user.txt", ",")[0]);
         }catch (Exception e){refid=1;}
         try{
             penalty.RefID = refid;
             penalty.RacerID = Integer.parseInt(i);////////////////////////////////////
             if(bitmapImage !=null)
                 penalty.sendImageToServer(bitmapImage);
-            SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss");
+            SimpleDateFormat df = new SimpleDateFormat("kk:mm:ss");
             String date = df.format(Calendar.getInstance().getTime());
             penalty.PenaltyTime = new Time(df.parse(date).getTime());
         } catch (ParseException e) {
@@ -285,9 +316,14 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         }catch (Exception e){
             e.printStackTrace();
         }
-        business.AddPenalty(penalty);
-        Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
-        ClearText();
+        if(penalty.CommentID!=0) {
+            progressDialog.show();
+            progressDialog.setCancelable(false);
+            helpThread h = new helpThread(penalty);
+            new Thread(h).start();
+        }else{
+            Toast.makeText(getApplicationContext(), "Select A card then Comment", Toast.LENGTH_SHORT).show();
+        }
     }
     public class DownLoadPicture extends AsyncTask<Void, Void, Bitmap> {
         String name;
@@ -318,6 +354,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     public void ClearText(){
         loImage.setVisibility(View.GONE);
+        btnSave.setVisibility(View.GONE);
         txtRacerName.setText("");
         txtRacerNumber.setText("");
         tvComment.setVisibility(View.GONE);
@@ -345,9 +382,9 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         btnSave = findViewById(R.id.btnSave);
         navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
-        rdBlue.setBackgroundColor(getResources().getColor(R.color.blue));
-        rbYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
-        rdRed.setBackgroundColor(getResources().getColor(R.color.red));
+//        rdBlue.setBackgroundColor(getResources().getColor(R.color.blue));
+//        rbYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
+//        rdRed.setBackgroundColor(getResources().getColor(R.color.red));
     }
     public String binarySearch( ArrayList<RacerModel> racers, int l, int r, int x){
         if (r>=l)
@@ -418,5 +455,41 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     public void ClearImage(View view){
         loImage.setVisibility(View.GONE);
+    }
+    class helpThread implements Runnable {
+        PenaltyModel penalty;
+        boolean onCreate;
+        public helpThread(PenaltyModel penalty) {
+            this.penalty = penalty;
+        }
+
+        public helpThread(boolean onCreate) {
+            this.onCreate = onCreate;
+        }
+
+
+        @Override
+        public void run() {
+            if(onCreate){
+                business = new DBAccess();
+                comments = business.GetComments();
+                racers = business.GetAllRacerers();
+            }else {
+                final boolean isConnecting = business.AddPenalty(penalty);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isConnecting) {
+                            Toast.makeText(getApplicationContext(), "Ensure data is on and try again", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                            ClearText();
+                        }
+                        progressDialog.dismiss();
+                    }
+
+                });
+            }
+        }
     }
 }

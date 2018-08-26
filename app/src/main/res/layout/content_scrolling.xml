@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/backfiveo"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ScrollingActivity"
-    tools:showIn="@layout/activity_scrolling"
-    android:layout_alignParentBottom="true">
+    tools:showIn="@layout/activity_scrolling">
 
 
     <LinearLayout
@@ -27,7 +28,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/round_shape"
+            android:background="@drawable/second_round_shape"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +38,7 @@
             app:layout_constraintVertical_bias="0.795">
 
             <TextView
+
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,12 +47,13 @@
                 android:textAllCaps="true"
                 android:textSize="24sp"
                 android:textStyle="bold|italic" />
+
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
-                android:background="@color/colorAccent"/>
+                android:background="@color/colorPrimary" />
 
             <EditText
                 android:id="@+id/txtRacerNumber"
@@ -70,20 +73,20 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:ems="10"
+                android:enabled="false"
                 android:hint="@string/enter_racer_name"
                 android:inputType="textPersonName"
                 android:textSize="18sp" />
 
 
-
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/loHideCards"
@@ -93,8 +96,13 @@
                 android:visibility="gone">
 
                 <LinearLayout
+                    android:id="@+id/l1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/second_round_shape"
                     android:orientation="vertical">
 
@@ -115,46 +123,113 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="8dp"
-                        android:background="@color/colorAccent" />
+                        android:background="@color/colorPrimary" />
 
-                    <RadioGroup
-                        android:id="@+id/rgColor"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="5dp"
-                        android:orientation="vertical"
-                        tools:layout_editor_absoluteX="37dp"
-                        tools:layout_editor_absoluteY="253dp">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                        <RadioButton
-                            android:id="@+id/rdBlue"
-                            android:layout_width="match_parent"
+                        <RadioGroup
+                            android:id="@+id/rgColor"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:onClick="onRadioButtonClicked"
-                            android:text="@string/blue"
-                            android:textSize="18sp" />
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical"
+                            tools:layout_editor_absoluteX="37dp"
+                            tools:layout_editor_absoluteY="253dp">
 
-                        <RadioButton
-                            android:id="@+id/rbYellow"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:onClick="onRadioButtonClicked"
-                            android:text="@string/yellow"
-                            android:textSize="18sp" />
+                            <RadioButton
+                                android:id="@+id/rdBlue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="onRadioButtonClicked"
+                                android:text="@string/blue"
+                                android:textSize="18sp" />
 
-                        <RadioButton
-                            android:id="@+id/rdRed"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:onClick="onRadioButtonClicked"
-                            android:text="@string/red"
-                            android:textSize="18sp" />
+                            <RadioButton
+                                android:id="@+id/rbYellow"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="onRadioButtonClicked"
+                                android:text="@string/yellow"
+                                android:textSize="18sp" />
 
-                    </RadioGroup>
+                            <RadioButton
+                                android:id="@+id/rdRed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="onRadioButtonClicked"
+                                android:text="@string/red"
+                                android:textSize="18sp" />
+
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <View
+                                android:layout_width="50dp"
+                                android:layout_height="30dp"
+                                android:background="@color/blue" />
+
+                            <View
+                                android:layout_width="50dp"
+                                android:layout_height="30dp"
+                                android:background="@color/yellow" />
+
+                            <View
+                                android:layout_width="50dp"
+                                android:layout_height="30dp"
+                                android:background="@color/red" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/textView5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="5 Mins Penalty"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textView4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Stop And Go"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textView3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Disqualify"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvComment"
@@ -176,8 +251,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/l2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/second_round_shape"
                     android:orientation="vertical">
@@ -198,7 +276,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="8dp"
-                        android:background="@color/colorAccent" />
+                        android:background="@color/colorPrimary" />
 
                     <RadioGroup
                         android:id="@+id/rgTent"
@@ -227,44 +305,40 @@
                             android:textSize="18sp" />
                     </RadioGroup>
                 </LinearLayout>
-            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="8dp"
+
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/second_round_shape"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/loginButton"
+                        android:enabled="false"
+                        android:onClick="ToSavePenalty"
+                        android:text="Save"
+                        android:textColor="@color/cardview_light_background"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:background="@drawable/second_round_shape">
-
-                <Button
-                    android:id="@+id/btnSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/loginButton"
-                    android:enabled="false"
-                    android:onClick="ToSavePenalty"
-                    android:text="Save"
-                    android:textColor="@color/cardview_light_background"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-                <Button
-                    android:id="@+id/btnTakePic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onTakePicture"
-                    android:text="Take Picture"
-                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                </LinearLayout>
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/loImage"
@@ -276,7 +350,7 @@
 
                 <com.github.chrisbanes.photoview.PhotoView
                     android:id="@+id/imgRacer"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="451dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
@@ -297,8 +371,6 @@
 
 
     </LinearLayout>
-
-
 
 
 </android.support.v4.widget.NestedScrollView>
