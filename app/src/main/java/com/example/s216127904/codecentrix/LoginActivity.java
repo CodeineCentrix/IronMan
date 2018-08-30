@@ -269,7 +269,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         boolean onCreate;
         String email,password;
-
+        boolean connection = false;
         public helpThread(String email,String password) {
             this.email =email;
             this.password = password;
@@ -280,34 +280,46 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             boolean isValidUser =false;
             try {
+
                 DBAccess database = new DBAccess();
-                User ref =  database.FindAndLoginUser(email,password);
-                GeneralMethods m = new GeneralMethods(getApplicationContext());
-                m.writeToFile(""+ref.RefID+","+ref.RefFullName+","+ref.RefEmail+","+ref.RefPassword,"user.txt");
-                if(cbRemeber.isChecked())
-                    RemeberMe("yes");
-                else
-                    RemeberMe("no");
-                isValidUser = ref.RefID>0;
+                 connection = database.isConnecting();
+                if(connection) {
+                    User ref = database.FindAndLoginUser(email, password);
+                    GeneralMethods m = new GeneralMethods(getApplicationContext());
+                    m.writeToFile("" + ref.RefID + "," + ref.RefFullName + "," + ref.RefEmail + "," + ref.RefPassword, "user.txt");
+                    if (cbRemeber.isChecked())
+                        RemeberMe("yes");
+                    else
+                        RemeberMe("no");
+                    isValidUser = ref.RefID > 0;
+                }
             } catch (Exception a ) {
                 a.printStackTrace();
             }
+
             final boolean finalIsValidUser = isValidUser;
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (finalIsValidUser){
-                        Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
-                        startActivity(penaltySession);
-                    }
-                    else {
+                    if(connection){
+                        if (finalIsValidUser ){
+                            Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
+                            startActivity(penaltySession);
+                        }
+                        else {
+                            progressDialog.dismiss();
+                            Toast.makeText(cbRemeber.getContext(),"Invalid user",Toast.LENGTH_SHORT).show();
+                        }
                         progressDialog.dismiss();
-                        Toast.makeText(cbRemeber.getContext(),"Invalid user",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(cbRemeber.getContext(),"No connection",Toast.LENGTH_LONG).show();
+
                     }
                     progressDialog.dismiss();
                 }
 
             });
+
         }
     }
 }

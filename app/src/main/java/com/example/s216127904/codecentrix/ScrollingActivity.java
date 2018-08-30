@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -85,6 +86,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     LinearLayout loImage, loHideCards;
     ProgressDialog progressDialog;
     Handler handler = new Handler();
+    private ImageView tent1,tent2;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -230,15 +232,20 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         }
         btnSave.setEnabled(true);
         btnSave.setVisibility(View.VISIBLE);
-        boolean checked = ((RadioButton) view).isChecked();
+//        boolean checked = ((RadioButton) view).isChecked();
+
         // Check which radio button was clicked
         switch (view.getId()) {
-            case R.id.rdTent1:
-                if (checked)
+            case R.id.imgTent1:
+                //if (checked)
                     penalty.TentID = 1;
+                tent1.setBackgroundColor(getResources().getColor(R.color.background));
+                tent2.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 break;
-            case R.id.rdTent2:
-                if (checked)
+            case R.id.imgTent2:
+               // if (checked)
+                    tent1.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                    tent2.setBackgroundColor(getResources().getColor(R.color.background));
                     penalty.TentID = 2;
                 break;
         }
@@ -358,8 +365,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         txtRacerName.setText("");
         txtRacerNumber.setText("");
         tvComment.setVisibility(View.GONE);
-        RadioGroup tentGroup = findViewById(R.id.rgTent);
-        tentGroup.clearCheck();
+
         RadioGroup cardGroup = findViewById(R.id.rgColor);
         cardGroup.clearCheck();
         loHideCards.setVisibility(View.GONE);
@@ -373,14 +379,15 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         rdBlue = findViewById(R.id.rdBlue);
         rbYellow = findViewById(R.id.rbYellow);
         rdRed = findViewById(R.id.rdRed);
-        rdTent1 = findViewById(R.id.rdTent1);
-        rdTent2 = findViewById(R.id.rdTent2);
+
         imgRacer = findViewById(R.id.imgRacer);
         toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
         loHideCards = findViewById(R.id.loHideCards);
         btnSave = findViewById(R.id.btnSave);
         navigationView = findViewById(R.id.nav_view);
+        tent1 = findViewById(R.id.imgTent1);
+        tent2 = findViewById(R.id.imgTent2);
         setSupportActionBar(toolbar);
 //        rdBlue.setBackgroundColor(getResources().getColor(R.color.blue));
 //        rbYellow.setBackgroundColor(getResources().getColor(R.color.yellow));

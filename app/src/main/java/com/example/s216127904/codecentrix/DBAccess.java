@@ -32,8 +32,8 @@ public class DBAccess {
         static String us;
         static String password;
 
-        private static void Connect() {
-
+        private static boolean Connect() {
+            boolean isConnecting = false;
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
@@ -46,9 +46,12 @@ public class DBAccess {
 
                 Class.forName(forName).newInstance();
                 connection = DriverManager.getConnection(conString, us, password);
+                isConnecting = true;
             } catch (Exception e) {
                 e.printStackTrace();
+                isConnecting = false;
             }
+            return isConnecting;
         }
 
         private static void Close() {
@@ -56,6 +59,7 @@ public class DBAccess {
                 innerResultSet=null;
                 st = null;
                 connection.close();
+                connection = null;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -153,7 +157,9 @@ public class DBAccess {
             }
         }
     }
-
+    public boolean isConnecting(){
+        return DBHelper.Connect();
+    }
     public TicketModel GetTickets() {
         //this object acts like a sqlparameter like in c#
         TicketModel ticketModel = new TicketModel();
