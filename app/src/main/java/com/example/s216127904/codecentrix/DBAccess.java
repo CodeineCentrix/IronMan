@@ -1,5 +1,6 @@
 package com.example.s216127904.codecentrix;
 
+import android.os.AsyncTask;
 import android.os.StrictMode;
 
 import java.math.BigDecimal;
@@ -23,7 +24,7 @@ public class DBAccess {
 
     private ResultSet outerResultSet;
 
-    private static class DBHelper {
+    private static class DBHelper extends AsyncTask<String,String,String> {
         private static String conString;
         private static Connection connection;
         private static PreparedStatement st;
@@ -155,6 +156,12 @@ public class DBAccess {
                     preparedStatement.setObject(parameterIndex, parameterObj);
                 }
             }
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Connect();
+            return  "";
         }
     }
     public boolean isConnecting(){
