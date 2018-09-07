@@ -76,20 +76,22 @@ public class DBAccess {
         }
 
         static boolean NonQuery(String sql, Object[] parameters) {
-            Connect();
-            int i = 0;
-            try {
-                st = connection.prepareStatement(SetParaToPass(sql, parameters));
-                int count = 1;
-                for (Object para : parameters) {
-                    BindParameter(count, para, st);
-                    count++;
+            boolean i =  Connect();
+            if(i){
+                try {
+
+                    st = connection.prepareStatement(SetParaToPass(sql, parameters));
+                    int count = 1;
+                    for (Object para : parameters) {
+                        BindParameter(count, para, st);
+                        count++;
+                    }
+                    i = 0 == st.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-                i = st.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-            return i == 0;
+            return i;
         }
 
         static ResultSet Select(String sql) {
@@ -252,10 +254,23 @@ public class DBAccess {
                 penalty.PenaltyTime,
                 penalty.PenaltyPicturePath,
                 penalty.longitude,
-                penalty.latitude
+                penalty.latitude,
+                penalty.confirmationSurname
 
         };
         boolean i = DBHelper.NonQuery("uspAddPenalty",paras);
+        DBHelper.Close();
+        return i;
+    }
+
+    public Boolean AddRef(){
+        Object[] paras = {
+                User.RefFullName,
+                User.RefEmail,
+                User.RefPassword
+
+        };
+        boolean i = DBHelper.NonQuery("uspMobAddRef",paras);
         DBHelper.Close();
         return i;
     }

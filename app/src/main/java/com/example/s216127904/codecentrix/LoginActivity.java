@@ -107,11 +107,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             details = m.Read("user.txt",",");
             mEmailView.setText(details[2]);
             mPasswordView.setText(details[3]);
+            Intent penaltySession = new Intent(this, ScrollingActivity.class);
+            startActivity(penaltySession);
+        }else {
+            mLoginFormView = findViewById(R.id.login_form);
+           /* progressDialog.show();
+            attemptLogin();*/
         }
 
-        mLoginFormView = findViewById(R.id.login_form);
-        progressDialog.show();
-        attemptLogin();
+
     }
     @Override
     protected void onStop() {
@@ -305,6 +309,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         if (finalIsValidUser ){
                             Intent penaltySession = new Intent(getApplicationContext(), ScrollingActivity.class);
                             startActivity(penaltySession);
+
                         }
                         else {
                             progressDialog.dismiss();
@@ -321,6 +326,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             });
 
         }
+    }
+    public void toRegister(View view){
+        Intent register = new Intent(this,Register.class);
+        startActivity(register);
+
     }
 }
 

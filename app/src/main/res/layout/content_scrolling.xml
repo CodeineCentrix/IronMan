@@ -72,8 +72,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Enter racer surname"
-                android:inputType="textPersonName"
-              />
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/txtRacerName"
@@ -83,6 +82,7 @@
                 android:layout_marginRight="10dp"
                 android:ems="10"
                 android:enabled="false"
+                android:textColor="@color/colorPrimaryDark"
                 android:hint="@string/enter_racer_name"
                 android:inputType="textPersonName"
                 android:textSize="18sp" />
@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/l1"
@@ -136,8 +136,8 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:orientation="vertical"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <RadioGroup
                             android:id="@+id/rgColor"
@@ -151,19 +151,21 @@
 
                             <RadioButton
                                 android:id="@+id/rdBlue"
+                                style="@style/RadioButtonStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:onClick="onRadioButtonClicked"
+
                                 android:text="@string/blue"
                                 android:textSize="18sp" />
 
                             <RadioButton
                                 android:id="@+id/rbYellow"
+                                style="@style/RadioButtonStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:onClick="onRadioButtonClicked"
+
                                 android:text="@string/yellow"
                                 android:textSize="18sp" />
 
@@ -172,7 +174,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:onClick="onRadioButtonClicked"
+
+
                                 android:text="@string/red"
                                 android:textSize="18sp" />
 
@@ -184,20 +187,29 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <View
-                                android:layout_width="120dp"
-                                android:layout_height="30dp"
-                                android:background="@color/blue" />
 
                             <View
+                                android:id="@+id/vBlue"
                                 android:layout_width="120dp"
                                 android:layout_height="30dp"
-                                android:background="@color/yellow" />
+                                android:background="@color/blue"
+                                android:onClick="onCardSelect" />
+
 
                             <View
+                                android:id="@+id/vYellow"
+                                android:layout_width="120dp"
+                                android:layout_height="30dp"
+                                android:background="@color/yellow"
+                                android:onClick="onCardSelect" />
+
+                            <View
+                                android:id="@+id/vRed"
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
-                                android:background="@color/red" />
+                                android:background="@color/red"
+                                android:onClick="onCardSelect" />
+
                         </LinearLayout>
 
                         <LinearLayout

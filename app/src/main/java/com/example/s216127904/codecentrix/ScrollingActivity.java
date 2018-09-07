@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -19,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -58,12 +60,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import android.net.Uri;
 import ViewModel.CommentsModel;
 import ViewModel.PenaltyModel;
 import ViewModel.RacerModel;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import java.io.File;
+import java.util.Date;
 
 public class ScrollingActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
     private PhotoView imgRacer;
@@ -72,7 +76,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     private PenaltyModel penalty = new PenaltyModel();
     private Bitmap bitmapImage;
     private RadioButton rdBlue, rbYellow, rdRed, rdTent1, rdTent2;
-    private EditText txtRacerNumber, txtRacerName;
+    private EditText txtRacerNumber, txtRacerName,txtRacerSurname;
     private TextView tvComment;
     private DownLoadPicture downLoadPicture;
     private LocationManager locationManager;
@@ -82,11 +86,12 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private Button btnSave;
-    NavigationView navigationView;
-    LinearLayout loImage, loHideCards;
-    ProgressDialog progressDialog;
-    Handler handler = new Handler();
+    private NavigationView navigationView;
+    private LinearLayout loImage, loHideCards;
+    private ProgressDialog progressDialog;
+    private Handler handler = new Handler();
     private ImageView tent1,tent2;
+    private View vBlue,vYellow,vRed;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -178,8 +183,50 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     public void onTakePicture(View view){
         Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String pictureName = getPictureName();
+        File imageFile = new File(pictureDirectory, pictureName);
+        Uri pictureUri = Uri.fromFile(imageFile);
+        showCamera.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
         startActivityForResult(showCamera, 10);
 
+
+
+    }
+    private void invokeCamera() {
+
+        // get a file reference
+        Uri pictureUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", createImageFile());
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // tell the camera where to save the image.
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+
+        // tell the camera to request WRITE permission.
+        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+        startActivityForResult(intent, 10);
+
+    }
+    private String getPictureName() {
+        String uploadImageName= "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
+        //now send the actual image to the database...
+//        new UploadImage(imageToUpload, uploadImageName).execute();
+        return uploadImageName;
+    }
+    private File createImageFile() {
+        // the public picture director
+        File picturesDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+        // timestamp makes unique name.
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = sdf.format(new Date());
+
+        // put together the directory and the timestamp to make a unique image location.
+        File imageFile = new File(picturesDirectory, "picture" + timestamp + ".jpg");
+
+        return imageFile;
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -223,6 +270,37 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
                 break;
         }
     }
+    public void onCardSelect(View view) {
+        // Is the button now checked?
+
+        if (this.getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(view.getContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
+
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.vBlue:
+                vBlue.setBackgroundColor(getResources().getColor(R.color.SelectedBlue));
+                vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                vRed.setBackgroundColor(getResources().getColor(R.color.red));
+                showDialog(view, 3);
+                break;
+            case R.id.vYellow:
+                vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
+                vYellow.setBackgroundColor(getResources().getColor(R.color.SelectedYellow));
+                vRed.setBackgroundColor(getResources().getColor(R.color.red));
+                    showDialog(view, 2);
+                break;
+            case R.id.vRed:
+                vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
+                vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                vRed.setBackgroundColor(getResources().getColor(R.color.SelectedRed));
+                    showDialog(view, 1);
+                break;
+        }
+    }
     public void onTentClicked(View view) {
         // Is the button now checked?
         if(txtRacerNumber.isFocused())
@@ -239,13 +317,13 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
             case R.id.imgTent1:
                 //if (checked)
                     penalty.TentID = 1;
-                tent1.setBackgroundColor(getResources().getColor(R.color.background));
-                tent2.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                tent1.setBackgroundColor(getResources().getColor(R.color.colorWhitish));
+                tent2.setBackgroundColor(getResources().getColor(R.color.background));
                 break;
             case R.id.imgTent2:
                // if (checked)
-                    tent1.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-                    tent2.setBackgroundColor(getResources().getColor(R.color.background));
+                    tent1.setBackgroundColor(getResources().getColor(R.color.background));
+                    tent2.setBackgroundColor(getResources().getColor(R.color.colorWhitish));
                     penalty.TentID = 2;
                 break;
         }
@@ -273,9 +351,9 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==10 && data!=null){
-            bitmapImage = (Bitmap) data.getExtras().get("data");
-            imgRacer.setImageBitmap(bitmapImage);
-            loImage.setVisibility(navigationView.VISIBLE);
+//            bitmapImage = (Bitmap) data.getExtras().get("data");
+//            imgRacer.setImageBitmap(bitmapImage);
+//            loImage.setVisibility(navigationView.VISIBLE);
         }
     }
     public void showDialog(View view, int ticketID) {
@@ -304,6 +382,7 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     public void ToSavePenalty(View v) {
         String i = txtRacerNumber.getText().toString();
+        penalty.confirmationSurname = txtRacerSurname.getText().toString();
         int refid;
         try {
             refid = Integer.parseInt(generalMethods.Read("user.txt", ",")[0]);
@@ -376,6 +455,12 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         loImage = findViewById(R.id.loImage);
         txtRacerNumber = findViewById(R.id.txtRacerNumber);
         txtRacerName = findViewById(R.id.txtRacerName);
+        txtRacerSurname = findViewById(R.id.txtRacerSurname);
+
+        vBlue = findViewById(R.id.vBlue);
+        vYellow = findViewById(R.id.vYellow);
+        vRed = findViewById(R.id.vRed);
+
         rdBlue = findViewById(R.id.rdBlue);
         rbYellow = findViewById(R.id.rbYellow);
         rdRed = findViewById(R.id.rdRed);
@@ -388,6 +473,8 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         navigationView = findViewById(R.id.nav_view);
         tent1 = findViewById(R.id.imgTent1);
         tent2 = findViewById(R.id.imgTent2);
+        tent2.setBackgroundColor(getResources().getColor(R.color.background));
+        tent1.setBackgroundColor(getResources().getColor(R.color.background));
         setSupportActionBar(toolbar);
 //        rdBlue.setBackgroundColor(getResources().getColor(R.color.blue));
 //        rbYellow.setBackgroundColor(getResources().getColor(R.color.yellow));

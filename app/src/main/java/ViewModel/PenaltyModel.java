@@ -19,6 +19,7 @@ public class PenaltyModel {
     public int TicketID;
     public String PenaltyPicturePath ;
     public String PenaltyLocation ;
+    public String confirmationSurname ;
     public Date PenaltyDate;
     public Time PenaltyTime;
     public Double longitude;
