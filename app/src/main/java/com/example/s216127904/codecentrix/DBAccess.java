@@ -178,11 +178,13 @@ public class DBAccess {
         //the is alot that could go wrong when trying to connect to the database that is why the is a try catch
         try {
             //the outerResulSet is the table returned from the execution of the stored procedure
-            outerResultSet.next();//Moves from row of Heading to row record
-            ticketModel.TictetType = outerResultSet.getInt("TicketType");//you need to specify not only the colunm name but also the data type to be return
-            ticketModel.TicketColour = outerResultSet.getString("TicketColour");
-            ticketModel.ticketName = outerResultSet.getString("ticketName");
-            ticketModel.TicketTip = outerResultSet.getString("TicketTip");
+            if(outerResultSet!=null) {
+                outerResultSet.next();//Moves from row of Heading to row record
+                ticketModel.TictetType = outerResultSet.getInt("TicketType");//you need to specify not only the colunm name but also the data type to be return
+                ticketModel.TicketColour = outerResultSet.getString("TicketColour");
+                ticketModel.ticketName = outerResultSet.getString("ticketName");
+                ticketModel.TicketTip = outerResultSet.getString("TicketTip");
+            }
             DBHelper.Close();//to closes the connection
         } catch (SQLException e) {
             e.printStackTrace();// I propable should inform the user
@@ -193,7 +195,7 @@ public class DBAccess {
         ArrayList<CommentsModel> comments = new ArrayList<>();
         outerResultSet = DBHelper.Select("uspGetComments");
         try {
-
+            if(outerResultSet!=null)
            while (outerResultSet.next()){
             CommentsModel comment = new CommentsModel();
             comment.CommentID = outerResultSet.getInt("CommentID");
@@ -211,7 +213,7 @@ public class DBAccess {
         ArrayList<RacerModel> racerModels = new ArrayList<>();
         outerResultSet = DBHelper.Select("uspGetAllRacerers");
         try {
-
+            if(outerResultSet!=null)
             while (outerResultSet.next()){
                 RacerModel Racer = new RacerModel();
                 Racer.RacerID = outerResultSet.getInt("RacerID");
@@ -234,13 +236,15 @@ public class DBAccess {
             password
         };
         outerResultSet = DBHelper.SelectPara("uspLogin", params);
-        outerResultSet.next();
+        if(outerResultSet!=null) {
+            outerResultSet.next();
             ref.RefID = outerResultSet.getInt("RefID");
             ref.RefFullName = outerResultSet.getString("RefFullName");
             ref.RefEmail = outerResultSet.getString("RefEmail");
             ref.RefPassword = outerResultSet.getString("RefPassword");
 
-        DBHelper.Close();
+            DBHelper.Close();
+        }
         return  ref;
     }
 

@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import ViewModel.CommentsModel;
 
 public class CommentAdapter extends BaseAdapter {
-
+    IgetComment igetComment;
     public ArrayList<CommentsModel> comments = new ArrayList<>();
     private LayoutInflater mInflater;
     int ticketID;
     private Context c;
-    public CommentAdapter(Context context, ArrayList<CommentsModel> comments, int ticketID){
+    public CommentAdapter(Context context,ScrollingActivity sc, ArrayList<CommentsModel> comments, int ticketID){
         c = context;
+        igetComment = sc;
         this.ticketID = ticketID;
 
         for (int i =0; i<comments.size();i++) {
@@ -38,6 +39,7 @@ public class CommentAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
+        igetComment.SetCommentID(comments.get(position).CommentID);
         return comments.get(position).CommentDescription;
     }
 
@@ -61,4 +63,5 @@ public class CommentAdapter extends BaseAdapter {
 
         return v;
     }
+
 }

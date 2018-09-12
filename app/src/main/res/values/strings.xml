@@ -143,4 +143,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="register">Register</string>
+    <string name="can_open_without">Can not open camera without permission</string>
+    <string name="disqualify">Disqualify</string>
+    <string name="stop_and_go">Stop And Go</string>
+    <string name="_5_mins">5 Mins</string>
 </resources>

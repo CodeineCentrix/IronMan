@@ -10,8 +10,8 @@
     <color name="red" >#f44336</color>
     <color name="yellow" >#FFEB3B</color>
     <color name="blue" >#03A9F4</color>
-    <color name="SelectedRed" >#b71c1c</color>
-    <color name="SelectedYellow" >#F9A825</color>
-    <color name="SelectedBlue" >#0277BD</color>
+    <color name="SelectedRed" >#7df44336</color>
+    <color name="SelectedYellow" >#8effeb3b</color>
+    <color name="SelectedBlue" >#8f03a9f4</color>
     <color name="background" >#bdc3c7</color>
 </resources>

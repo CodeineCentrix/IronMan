@@ -2,6 +2,7 @@ package com.example.s216127904.codecentrix;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -30,7 +32,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -43,6 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +56,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -66,21 +72,25 @@ import ViewModel.PenaltyModel;
 import ViewModel.RacerModel;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import java.io.File;
 import java.util.Date;
 
-public class ScrollingActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
+public class ScrollingActivity extends AppCompatActivity  implements IgetComment,NavigationView.OnNavigationItemSelectedListener,GestureDetector.OnGestureListener{
+    public static final int CAMERA_REQUEST_CODE = 10;
+    public static final int PERMISSION_REQUST_CODE = 131;
+    public static final int LOCATION_REQUEST_CODE = 1;
+    public static final int GELLARY_REQUEST_CODE = 619;
     private PhotoView imgRacer;
     private ArrayList<CommentsModel> comments;
     private DBAccess business;
     private PenaltyModel penalty = new PenaltyModel();
     private Bitmap bitmapImage;
-    private RadioButton rdBlue, rbYellow, rdRed, rdTent1, rdTent2;
     private EditText txtRacerNumber, txtRacerName,txtRacerSurname;
     private TextView tvComment;
     private DownLoadPicture downLoadPicture;
-    private LocationManager locationManager;
-    private FusedLocationProviderClient client;
     private GeneralMethods generalMethods;
     private ArrayList<RacerModel> racers;
     private Toolbar toolbar;
@@ -90,13 +100,19 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     private LinearLayout loImage, loHideCards;
     private ProgressDialog progressDialog;
     private Handler handler = new Handler();
-    private ImageView tent1,tent2;
+    private ImageView tent1,tent2,imgBlue,imgRed,imgYellow;
     private View vBlue,vYellow,vRed;
+    private File picturesDirectory , imageFile;
+    private Uri pictureUri;
+    private GestureDetector gestureDetector;
+    Context thisThing;
+    Spinner spnComment;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SetUpControllers();
+        thisThing = this;
         generalMethods = new GeneralMethods(getApplicationContext());
         requestPermission();
         progressDialog = new ProgressDialog(ScrollingActivity.this,
@@ -133,8 +149,8 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if(s.toString().equals("")) {
-                    LinearLayout l1 = (LinearLayout) findViewById(R.id.l1);
-                    LinearLayout l2 = (LinearLayout) findViewById(R.id.l2);
+                    LinearLayout l1 = findViewById(R.id.l1);
+                    LinearLayout l2 = findViewById(R.id.l2);
                     Animation upToDown = AnimationUtils.loadAnimation(txtRacerName.getContext(), R.anim.downtoup);
                     l1.setAnimation(upToDown);
                     Animation downToUp = AnimationUtils.loadAnimation(txtRacerName.getContext(), R.anim.downtoup);
@@ -157,10 +173,28 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         navigationView.setNavigationItemSelectedListener(this);
         helpThread h = new helpThread(true);
         new Thread(h).start();
-        LinearLayout l = (LinearLayout) findViewById(R.id.linearLayout);
+        LinearLayout racerDetailsLayout = findViewById(R.id.linearLayout);
         Animation upToDown = AnimationUtils.loadAnimation(this,R.anim.downtoup);
-        l.setAnimation(upToDown);
+        racerDetailsLayout.setAnimation(upToDown);
         SetHeader();
+        loHideCards.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+               onKeyBoardHid(v);
+                return true;
+            }
+        });
+        onKeyBoardHid(loHideCards);
+        gestureDetector = new GestureDetector(this);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(comments!=null){
+                   txtRacerNumber.requestFocus();
+                }
+            }
+        },5000);
+
     }
     public void SetHeader(){
         String[] details = generalMethods.Read("user.txt",",");
@@ -175,28 +209,39 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
 //        }catch (Exception e){
 //            e.printStackTrace();
 //        }
-        TextView tvFullName = (TextView) header.findViewById(R.id.navUserName);
+        TextView tvFullName = header.findViewById(R.id.navUserName);
         TextView tvEmail = header.findViewById(R.id.navEmail);
         tvEmail.setText(details[2]);
         tvFullName.setText(details[1]);
         navigationView.setNavigationItemSelectedListener(this);
     }
     public void onTakePicture(View view){
-        Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+       /* Intent showCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String pictureName = getPictureName();
         File imageFile = new File(pictureDirectory, pictureName);
         Uri pictureUri = Uri.fromFile(imageFile);
         showCamera.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
-        startActivityForResult(showCamera, 10);
+        startActivityForResult(showCamera, CAMERA_REQUEST_CODE);*/
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+                invokeCamera();
+            }else {
+
+                String[] request = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                requestPermissions(request, PERMISSION_REQUST_CODE);
+
+            }
+        }
 
 
     }
     private void invokeCamera() {
 
         // get a file reference
-        Uri pictureUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", createImageFile());
+         pictureUri = FileProvider.getUriForFile(this,
+                getApplicationContext().getPackageName() + ".provider", createImageFile());
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -206,100 +251,96 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         // tell the camera to request WRITE permission.
         intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-        startActivityForResult(intent, 10);
+        startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
     }
-    private String getPictureName() {
-        String uploadImageName= "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
-        //now send the actual image to the database...
-//        new UploadImage(imageToUpload, uploadImageName).execute();
-        return uploadImageName;
+    public void onImageGalleryClicked(View v) {
+        // invoke the image gallery using an implict intent.
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+
+        // where do we want to find the data?
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String pictureDirectoryPath = pictureDirectory.getPath();
+        // finally, get a URI representation
+        Uri data = Uri.parse(pictureDirectoryPath);
+
+        // set the data and type.  Get all image types.
+        photoPickerIntent.setDataAndType(data, "image/*");
+
+        // we will invoke this activity, and get something back from it.
+        startActivityForResult(photoPickerIntent, GELLARY_REQUEST_CODE);
     }
     private File createImageFile() {
         // the public picture director
-        File picturesDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+         picturesDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
         // timestamp makes unique name.
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timestamp = sdf.format(new Date());
 
         // put together the directory and the timestamp to make a unique image location.
-        File imageFile = new File(picturesDirectory, "picture" + timestamp + ".jpg");
+         imageFile = new File(picturesDirectory, "picture" + timestamp + ".jpg");
 
         return imageFile;
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 10) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLoction();
+        if(requestCode == PERMISSION_REQUST_CODE){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                invokeCamera();
+            }else {
+                Toast.makeText(this, R.string.can_open_without,Toast.LENGTH_LONG).show();
             }
         }
+
     }
     public void requestPermission() {
-        ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION},1);
+        ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION,WRITE_EXTERNAL_STORAGE}, LOCATION_REQUEST_CODE);
 
 
     }
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-
+    public void onKeyBoardHid(View view){
         if (this.getCurrentFocus() != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(view.getContext().INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-
-        boolean checked = ((RadioButton) view).isChecked();
-        // Check which radio button was clicked
-        switch (view.getId()) {
-            case R.id.rdBlue:
-                if (checked)
-                    showDialog(view, 3);
-
-                break;
-            case R.id.rbYellow:
-                if (checked)
-                    showDialog(view, 2);
-
-                break;
-            case R.id.rdRed:
-                if (checked)
-                    showDialog(view, 1);
-
-                break;
         }
     }
     public void onCardSelect(View view) {
         // Is the button now checked?
 
+
         if (this.getCurrentFocus() != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(view.getContext().INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
-
+        imgBlue.setVisibility(View.GONE);
+        imgRed.setVisibility(View.GONE);
+        imgYellow.setVisibility(View.GONE);
+        vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
+        vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
+        vRed.setBackgroundColor(getResources().getColor(R.color.red));
         // Check which radio button was clicked
         switch (view.getId()) {
             case R.id.vBlue:
                 vBlue.setBackgroundColor(getResources().getColor(R.color.SelectedBlue));
-                vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
-                vRed.setBackgroundColor(getResources().getColor(R.color.red));
                 showDialog(view, 3);
+                imgBlue.setVisibility(View.VISIBLE);
                 break;
             case R.id.vYellow:
-                vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
                 vYellow.setBackgroundColor(getResources().getColor(R.color.SelectedYellow));
-                vRed.setBackgroundColor(getResources().getColor(R.color.red));
-                    showDialog(view, 2);
+                showDialog(view, 2);
+                imgYellow.setVisibility(View.VISIBLE);
                 break;
             case R.id.vRed:
-                vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
-                vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
                 vRed.setBackgroundColor(getResources().getColor(R.color.SelectedRed));
-                    showDialog(view, 1);
+                showDialog(view, 1);
+                imgRed.setVisibility(View.VISIBLE);
                 break;
         }
+
     }
     public void onTentClicked(View view) {
         // Is the button now checked?
@@ -328,57 +369,83 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
                 break;
         }
     }
-    public void getLoction(){
-        client = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-        }
-        client.getLastLocation().addOnSuccessListener(ScrollingActivity.this,
-                new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if(location !=null) {
-                            penalty.longitude = location.getLongitude();
-                            penalty.latitude = location.getAltitude();
-                        }
-                    }
-                });
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==10 && data!=null){
-//            bitmapImage = (Bitmap) data.getExtras().get("data");
-//            imgRacer.setImageBitmap(bitmapImage);
-//            loImage.setVisibility(navigationView.VISIBLE);
+       /* if(requestCode==10 && data!=null){
+            bitmapImage = (Bitmap) data.getExtras().get("data");
+            imgRacer.setImageBitmap(bitmapImage);
+            loImage.setVisibility(navigationView.VISIBLE);
+
+        }else*/
+        if(resultCode == RESULT_OK) {
+                if (requestCode == CAMERA_REQUEST_CODE && pictureUri!=null) {
+                    Toast.makeText(this, "Image Saved.", Toast.LENGTH_LONG).show();
+
+                    Uri uri = pictureUri;
+                    // declare a stream to read the image data from the SD Card.
+                    InputStream inputStream;
+
+                    // we are getting an input stream, based on the URI of the image.
+                    try {
+                        inputStream = getContentResolver().openInputStream(uri);
+
+                        // get a bitmap from the stream.
+                        bitmapImage = BitmapFactory.decodeStream(inputStream);
+
+
+                        // show the image to the user
+                        imgRacer.setImageBitmap(bitmapImage);
+                        loImage.setVisibility(View.VISIBLE);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        // show a message to the user indictating that the image is unavailable.
+                        Toast.makeText(this, "Unable to open image", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+                // if we are here, everything processed successfully.
+                if (requestCode == GELLARY_REQUEST_CODE) {
+                    // if we are here, we are hearing back from the image gallery.
+
+                    // the address of the image on the SD Card.
+                    Uri imageUri = data.getData();
+
+                    // declare a stream to read the image data from the SD Card.
+                    InputStream inputStream;
+
+                    // we are getting an input stream, based on the URI of the image.
+                    try {
+                        inputStream = getContentResolver().openInputStream(imageUri);
+
+                        // get a bitmap from the stream.
+                        Bitmap image = BitmapFactory.decodeStream(inputStream);
+
+
+                        // show the image to the user
+                        imgRacer.setImageBitmap(image);
+                        loImage.setVisibility(View.VISIBLE);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        // show a message to the user indictating that the image is unavailable.
+                        Toast.makeText(this, "Unable to open image", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            }
         }
-    }
+
     public void showDialog(View view, int ticketID) {
         penalty.TicketID = ticketID;/////////////////////////////
-        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(ScrollingActivity.this);
-        View commentView = getLayoutInflater().inflate(R.layout.ticket_comment, null);
-        final ListView list = commentView.findViewById(R.id.lvComments);
-        final CommentAdapter listAdapter = new CommentAdapter(getApplicationContext(), comments, ticketID);
-        list.setAdapter(listAdapter);
-        Button btnBack = commentView.findViewById(R.id.btnBack);
-        mBuilder.setView(commentView);
-        final AlertDialog dialog = mBuilder.create();
+        final CommentAdapter listAdapter = new CommentAdapter(getApplicationContext(),this, comments, ticketID);
+        spnComment.setAdapter(listAdapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                penalty.CommentID = listAdapter.getCommentID(position);//////////////////////////////////////////////////
-                tvComment = findViewById(R.id.tvComment);
-                tvComment.setText("SELECTED COMMENT:\n "+listAdapter.comments.get(position).CommentDescription);
-                tvComment.setVisibility(View.VISIBLE);
-                dialog.dismiss();
+    }
 
-            }
-        });
-        dialog.show();
+    public void onCommentSelect(View v){
+
     }
     public void ToSavePenalty(View v) {
         String i = txtRacerNumber.getText().toString();
@@ -411,6 +478,75 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
             Toast.makeText(getApplicationContext(), "Select A card then Comment", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        boolean result = true;
+        float diffY = e1.getY() - e2.getY();
+        float diffx = e1.getX() - e2.getX();
+
+        if(Math.abs(diffY)> Math.abs(diffx)){
+           //Down up swipe
+            if(velocityY >50 && Math.abs(diffY)>50){
+                if(diffY>0){
+                    //up
+                }else {
+                    //down
+                    if (this.getCurrentFocus() != null) {
+                        InputMethodManager imm = (InputMethodManager)getSystemService(vBlue.getContext().INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(vBlue.getWindowToken(), 0);
+                    }
+                }
+            }else {
+
+            }
+        }else {
+
+        }
+        return result;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void SetCommentID(int value) {
+        penalty.CommentID = value;
+    }
+
+    @Override
+    public String GetCommentID() {
+        return null;
+    }
+
     public class DownLoadPicture extends AsyncTask<Void, Void, Bitmap> {
         String name;
 
@@ -443,10 +579,14 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         btnSave.setVisibility(View.GONE);
         txtRacerName.setText("");
         txtRacerNumber.setText("");
+        txtRacerSurname.setText("");
+        imgBlue.setVisibility(View.GONE);
+        imgRed.setVisibility(View.GONE);
+        imgYellow.setVisibility(View.GONE);
         tvComment.setVisibility(View.GONE);
-
-        RadioGroup cardGroup = findViewById(R.id.rgColor);
-        cardGroup.clearCheck();
+        vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
+        vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
+        vRed.setBackgroundColor(getResources().getColor(R.color.red));
         loHideCards.setVisibility(View.GONE);
         penalty.ClearPenalty();
         imgRacer.setImageBitmap(downLoadPicture.doInBackground());
@@ -456,19 +596,17 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         txtRacerNumber = findViewById(R.id.txtRacerNumber);
         txtRacerName = findViewById(R.id.txtRacerName);
         txtRacerSurname = findViewById(R.id.txtRacerSurname);
-
+        imgBlue = findViewById(R.id.imgBlue);
+        imgRed = findViewById(R.id.imgRed);
+        imgYellow = findViewById(R.id.imgYellow);
         vBlue = findViewById(R.id.vBlue);
         vYellow = findViewById(R.id.vYellow);
         vRed = findViewById(R.id.vRed);
-
-        rdBlue = findViewById(R.id.rdBlue);
-        rbYellow = findViewById(R.id.rbYellow);
-        rdRed = findViewById(R.id.rdRed);
-
         imgRacer = findViewById(R.id.imgRacer);
         toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
         loHideCards = findViewById(R.id.loHideCards);
+        spnComment = findViewById(R.id.spnComment);
         btnSave = findViewById(R.id.btnSave);
         navigationView = findViewById(R.id.nav_view);
         tent1 = findViewById(R.id.imgTent1);
@@ -506,14 +644,20 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-
+    public boolean onHideSoftKey(View v){
+        if(this.getCurrentFocus()!=null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(v.getContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -538,12 +682,12 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
             Intent ShowMap = new Intent(this,Map.class);
             startActivity(ShowMap);
         } else if (id == R.id.nav_Help) {
-
+            onImageGalleryClicked(btnSave);
         } else if (id == R.id.nav_SignOut) {
             finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -553,6 +697,8 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
     class helpThread implements Runnable {
         PenaltyModel penalty;
         boolean onCreate;
+        boolean isConnecting;
+        Snackbar mySnackbar;
         public helpThread(PenaltyModel penalty) {
             this.penalty = penalty;
         }
@@ -566,8 +712,22 @@ public class ScrollingActivity extends AppCompatActivity  implements NavigationV
         public void run() {
             if(onCreate){
                 business = new DBAccess();
-                comments = business.GetComments();
-                racers = business.GetAllRacerers();
+                isConnecting = business.isConnecting();
+                if(isConnecting) {
+                    comments = business.GetComments();
+                    racers = business.GetAllRacerers();
+                }else {
+                    mySnackbar = Snackbar.make(vBlue,"No Connection", 8000);
+                    mySnackbar.getView().setBackgroundColor(Color.RED);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mySnackbar.show();
+
+                        }
+                    });
+
+                }
             }else {
                 final boolean isConnecting = business.AddPenalty(penalty);
                 handler.post(new Runnable() {
