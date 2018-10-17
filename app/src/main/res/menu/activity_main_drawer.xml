@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/auto_cam"
+            android:title="Auto Camera"
+            app:actionLayout="@layout/switch_item"
+            app:showAsAction="always" />
+        <item
             android:id="@+id/nav_Map"
+            android:actionLayout="@layout/switch_cam"
 
             android:title="Map" />
-
         <item
             android:id="@+id/nav_Help"
-
+            android:actionLayout="@layout/switch_cam"
             android:title="Help" />
         <item
             android:id="@+id/nav_SignOut"
 
             android:title="@string/sing_out" />
+
 
 
     </group>

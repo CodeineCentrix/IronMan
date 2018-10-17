@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +35,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +44,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +52,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,7 +83,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import java.io.File;
 import java.util.Date;
 
-public class ScrollingActivity extends AppCompatActivity  implements IgetComment,NavigationView.OnNavigationItemSelectedListener,GestureDetector.OnGestureListener{
+public class ScrollingActivity extends AppCompatActivity  implements IgetComment,NavigationView.OnNavigationItemSelectedListener{
     public static final int CAMERA_REQUEST_CODE = 10;
     public static final int PERMISSION_REQUST_CODE = 131;
     public static final int LOCATION_REQUEST_CODE = 1;
@@ -89,7 +94,6 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
     private PenaltyModel penalty = new PenaltyModel();
     private Bitmap bitmapImage;
     private EditText txtRacerNumber, txtRacerName,txtRacerSurname;
-    private TextView tvComment;
     private DownLoadPicture downLoadPicture;
     private GeneralMethods generalMethods;
     private ArrayList<RacerModel> racers;
@@ -100,19 +104,22 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
     private LinearLayout loImage, loHideCards;
     private ProgressDialog progressDialog;
     private Handler handler = new Handler();
-    private ImageView tent1,tent2,imgBlue,imgRed,imgYellow;
+    private ImageView tent1,tent2,imgBlue,imgRed,imgYellow,tent1X,tent2X;
     private View vBlue,vYellow,vRed;
     private File picturesDirectory , imageFile;
     private Uri pictureUri;
-    private GestureDetector gestureDetector;
     Context thisThing;
     Spinner spnComment;
+    CommentAdapter listAdapter;
+    Switch autoCamSwitch;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SetUpControllers();
         thisThing = this;
+        tent2X = findViewById(R.id.imgtentTwoX);
+        tent1X = findViewById(R.id.imgtentOneX);
         generalMethods = new GeneralMethods(getApplicationContext());
         requestPermission();
         progressDialog = new ProgressDialog(ScrollingActivity.this,
@@ -185,7 +192,7 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
             }
         });
         onKeyBoardHid(loHideCards);
-        gestureDetector = new GestureDetector(this);
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -194,13 +201,25 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
                 }
             }
         },5000);
+        spnComment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                penalty.CommentID = listAdapter.getCommentID(position) ;
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        if(generalMethods.readFromFile(getString(R.string.camera_file_name)).equals("on")){
+            onTakePicture(btnSave);
+        }
     }
     public void SetHeader(){
         String[] details = generalMethods.Read("user.txt",",");
         NavigationView navigationView = findViewById(R.id.nav_view);
-
-
         View header = navigationView.getHeaderView(0);
 //        ImageView profile = header.findViewById(R.id.nav_imgIcon);
 //        try {
@@ -284,8 +303,7 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
         return imageFile;
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PERMISSION_REQUST_CODE){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -344,6 +362,7 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
     }
     public void onTentClicked(View view) {
         // Is the button now checked?
+
         if(txtRacerNumber.isFocused())
             txtRacerNumber.clearFocus();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -354,22 +373,23 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
 //        boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
+        tent1X.setVisibility(View.INVISIBLE);
+        tent2X.setVisibility(View.INVISIBLE);
         switch (view.getId()) {
             case R.id.imgTent1:
-                //if (checked)
-                    penalty.TentID = 1;
+                tent1X.setVisibility(View.VISIBLE);
+                penalty.TentID = 1;
                 tent1.setBackgroundColor(getResources().getColor(R.color.colorWhitish));
                 tent2.setBackgroundColor(getResources().getColor(R.color.background));
                 break;
             case R.id.imgTent2:
-               // if (checked)
+                    tent2X.setVisibility(View.VISIBLE);
                     tent1.setBackgroundColor(getResources().getColor(R.color.background));
                     tent2.setBackgroundColor(getResources().getColor(R.color.colorWhitish));
                     penalty.TentID = 2;
                 break;
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -395,9 +415,15 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
                         bitmapImage = BitmapFactory.decodeStream(inputStream);
 
 
+
                         // show the image to the user
                         imgRacer.setImageBitmap(bitmapImage);
+
                         loImage.setVisibility(View.VISIBLE);
+                        if(racers==null) {
+                            helpThread helpThread = new helpThread(true);
+                            new Thread(helpThread).start();
+                        }
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                         // show a message to the user indictating that the image is unavailable.
@@ -435,16 +461,11 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
                 }
             }
         }
-
     public void showDialog(View view, int ticketID) {
         penalty.TicketID = ticketID;/////////////////////////////
-        final CommentAdapter listAdapter = new CommentAdapter(getApplicationContext(),this, comments, ticketID);
+       listAdapter = new CommentAdapter(getApplicationContext(),this, comments, ticketID);
         spnComment.setAdapter(listAdapter);
 
-
-    }
-
-    public void onCommentSelect(View v){
 
     }
     public void ToSavePenalty(View v) {
@@ -478,75 +499,14 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
             Toast.makeText(getApplicationContext(), "Select A card then Comment", Toast.LENGTH_SHORT).show();
         }
     }
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        boolean result = true;
-        float diffY = e1.getY() - e2.getY();
-        float diffx = e1.getX() - e2.getX();
-
-        if(Math.abs(diffY)> Math.abs(diffx)){
-           //Down up swipe
-            if(velocityY >50 && Math.abs(diffY)>50){
-                if(diffY>0){
-                    //up
-                }else {
-                    //down
-                    if (this.getCurrentFocus() != null) {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(vBlue.getContext().INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(vBlue.getWindowToken(), 0);
-                    }
-                }
-            }else {
-
-            }
-        }else {
-
-        }
-        return result;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        gestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
-    }
-
     @Override
     public void SetCommentID(int value) {
         penalty.CommentID = value;
     }
-
     @Override
     public String GetCommentID() {
         return null;
     }
-
     public class DownLoadPicture extends AsyncTask<Void, Void, Bitmap> {
         String name;
 
@@ -583,13 +543,15 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
         imgBlue.setVisibility(View.GONE);
         imgRed.setVisibility(View.GONE);
         imgYellow.setVisibility(View.GONE);
-        tvComment.setVisibility(View.GONE);
+
         vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
         vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
         vRed.setBackgroundColor(getResources().getColor(R.color.red));
         loHideCards.setVisibility(View.GONE);
         penalty.ClearPenalty();
-        imgRacer.setImageBitmap(downLoadPicture.doInBackground());
+        if(generalMethods.readFromFile(getString(R.string.camera_file_name)).equals("on")){
+            onTakePicture(btnSave);
+        }
     }
     public void SetUpControllers(){
         loImage = findViewById(R.id.loImage);
@@ -645,35 +607,15 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-    public boolean onHideSoftKey(View v){
-        if(this.getCurrentFocus()!=null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(v.getContext().INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -681,7 +623,23 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
         if (id == R.id.nav_Map) {
             Intent ShowMap = new Intent(this,Map.class);
             startActivity(ShowMap);
-        } else if (id == R.id.nav_Help) {
+        }else if(id == R.id.auto_cam){
+            //autoCamSwitch ;
+            if(generalMethods.readFromFile(getString(R.string.camera_file_name)).equals("on")){
+                autoCamSwitch.setChecked(true);
+            }
+            autoCamSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(autoCamSwitch.isChecked()){
+                        generalMethods.writeToFile("on",getString(R.string.camera_file_name));
+                    }else {
+                        generalMethods.writeToFile("off",getString(R.string.camera_file_name));
+                    }
+                }
+            });
+        }
+        else if (id == R.id.nav_Help) {
             onImageGalleryClicked(btnSave);
         } else if (id == R.id.nav_SignOut) {
             finish();
@@ -710,26 +668,34 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
 
         @Override
         public void run() {
+            business = new DBAccess();
+            isConnecting = business.isConnecting();
             if(onCreate){
-                business = new DBAccess();
-                isConnecting = business.isConnecting();
                 if(isConnecting) {
                     comments = business.GetComments();
                     racers = business.GetAllRacerers();
                 }else {
-                    mySnackbar = Snackbar.make(vBlue,"No Connection", 8000);
+                    mySnackbar = Snackbar.make(vBlue,"No Connection", 3000);
                     mySnackbar.getView().setBackgroundColor(Color.RED);
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             mySnackbar.show();
-
+                            InputMethodManager imm = (InputMethodManager)getSystemService(vBlue.getContext().INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(vBlue.getWindowToken(), 0);
+                            try {
+                                Thread.sleep(3000);
+                                helpThread h = new helpThread(true);
+                                new Thread(h).start();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
                 }
-            }else {
-                final boolean isConnecting = business.AddPenalty(penalty);
+            }else if(isConnecting) {
+                isConnecting = business.AddPenalty(penalty);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -738,12 +704,29 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
                         } else {
                             Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
                             ClearText();
+                            txtRacerNumber.requestFocus();
                         }
                         progressDialog.dismiss();
                     }
 
                 });
+            }else {
+                mySnackbar = Snackbar.make(vBlue,"No Connection", 3000);
+                mySnackbar.getView().setBackgroundColor(Color.RED);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mySnackbar.show();
+                        progressDialog.dismiss();
+                    }
+                });
+
             }
         }
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_scrolling, menu);
+        return true;
     }
 }

@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Enter racer surname"
+                android:hint="Racer surname"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -101,9 +101,9 @@
                 android:id="@+id/loHideCards"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:onClick="onKeyBoardHid"
                 android:orientation="vertical"
-                android:visibility="gone"
-                android:onClick="onKeyBoardHid">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/l1"
@@ -113,12 +113,12 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="10dp"
-                    android:paddingTop="8dp"
-
                     android:background="@drawable/second_round_shape"
-                    android:orientation="vertical">
 
-                 <!--   <TextView
+                    android:orientation="vertical"
+                    android:paddingTop="8dp">
+
+                    <!--   <TextView
                         android:id="@+id/tvCards"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -195,6 +195,7 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
+
                                 <ImageView
                                     android:id="@+id/imgYellow"
                                     android:layout_width="0dp"
@@ -221,6 +222,7 @@
                                     android:background="@color/red"
                                     android:onClick="onCardSelect"
                                     app:layout_constraintStart_toStartOf="parent" />
+
                                 <ImageView
                                     android:id="@+id/imgRed"
                                     android:layout_width="0dp"
@@ -231,8 +233,7 @@
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintVertical_bias="0.0"
-                                    app:srcCompat="@drawable/x"
-                                    />
+                                    app:srcCompat="@drawable/x" />
                             </android.support.constraint.ConstraintLayout>
 
                         </LinearLayout>
@@ -259,6 +260,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight=".30"
+                                android:paddingLeft="2dp"
                                 android:text="@string/stop_and_go"
                                 android:textColor="@android:color/black"
                                 android:textSize="18sp"
@@ -269,6 +271,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight=".30"
+                                android:paddingLeft="2dp"
                                 android:text="@string/disqualify"
                                 android:textColor="@android:color/black"
                                 android:textSize="18sp"
@@ -311,7 +314,7 @@
                     android:background="@drawable/second_round_shape"
                     android:orientation="vertical">
 
-                   <!-- <TextView
+                    <!-- <TextView
                         android:id="@+id/tvCards2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -336,21 +339,70 @@
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:id="@+id/imgTent1"
-                            android:layout_width="0dp"
-                            android:layout_height="136dp"
-                            android:layout_weight=".5"
-                            android:onClick="onTentClicked"
-                            app:srcCompat="@drawable/tent" />
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/imgTent2"
-                            android:layout_width="0dp"
-                            android:layout_height="136dp"
-                            android:layout_weight="0.5"
-                            android:onClick="onTentClicked"
-                            app:srcCompat="@drawable/tenttwo" />
+                            <ImageView
+                                android:id="@+id/imgTent1"
+                                android:layout_width="186dp"
+                                android:layout_height="136dp"
+                                android:layout_weight="0.5"
+                                android:onClick="onTentClicked"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/tent" />
+
+                            <ImageView
+                                android:id="@+id/imgtentOneX"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginEnd="16dp"
+
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="24dp"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/imgTent1"
+                                app:layout_constraintEnd_toEndOf="@+id/imgTent1"
+                                app:layout_constraintStart_toStartOf="@+id/imgTent1"
+                                app:layout_constraintTop_toTopOf="@+id/imgTent1"
+                                app:srcCompat="@drawable/x" />
+                        </android.support.constraint.ConstraintLayout>
+
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/imgTent2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="136dp"
+                                android:layout_weight="0.5"
+                                android:onClick="onTentClicked"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/tenttwo" />
+
+                            <ImageView
+                                android:id="@+id/imgtentTwoX"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="24dp"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="@+id/imgTent2"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/x" />
+                        </android.support.constraint.ConstraintLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -413,6 +465,16 @@
                     android:onClick="ClearImage"
                     android:text="@string/back"
                     android:visibility="visible" />
+
+                <Switch
+                    android:id="@+id/swithc_cam"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Auto Cam"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+
+
             </LinearLayout>
 
 

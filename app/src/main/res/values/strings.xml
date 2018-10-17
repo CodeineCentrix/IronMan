@@ -35,8 +35,8 @@
     <string name="title_activity_scrolling">Penalty form</string>
 
     <string name="action_settings">Settings</string>
-    <string name="enter_racer_number">Enter racer number</string>
-    <string name="enter_racer_name">Enter Racer name</string>
+    <string name="enter_racer_number">Racer number</string>
+    <string name="enter_racer_name">Racer name</string>
     <string name="enter_racer_details">Enter Racer Details</string>
     <string name="tent_1"><![CDATA[<Tent 1 Out]]></string>
     <string name="tent_2"><![CDATA[Tent 2 Back>]]></string>
@@ -147,4 +147,5 @@
     <string name="disqualify">Disqualify</string>
     <string name="stop_and_go">Stop And Go</string>
     <string name="_5_mins">5 Mins</string>
+    <string name="camera_file_name">auto.txt</string>
 </resources>

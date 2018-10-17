@@ -28,7 +28,7 @@ public class PenaltyModel {
     public  void sendImageToServer(Bitmap imageToUpload) throws IOException {
         //Quickly give the predicted path
 
-        PenaltyPicturePath = "http://sict-iis.nmmu.ac.za/codecentrix/IronMan/pictures/"+ "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
+        PenaltyPicturePath =  "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
         String uploadImageName= "PIC"+ new SimpleDateFormat("yyyyMMddHHmmss'.PNG'").format(new Date());
         //now send the actual image to the database...
         new UploadImage(imageToUpload, uploadImageName).execute();

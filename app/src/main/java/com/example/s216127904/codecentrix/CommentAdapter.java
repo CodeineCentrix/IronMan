@@ -1,6 +1,7 @@
 package com.example.s216127904.codecentrix;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,8 +60,11 @@ public class CommentAdapter extends BaseAdapter {
         TextView tvCommentID = v.findViewById(R.id.txtCommentID);
         tvComment.setText(comments.get(position).CommentDescription);
         tvCommentID.setText(""+comments.get(position).CommentID);
-        tvCommentID.setVisibility(View.INVISIBLE);
+//        tvComment.setGravity(Gravity.CENTER);
+        tvComment.setTextSize(20f);
+        tvComment.setPadding(18,8,8,8);
 
+        tvCommentID.setVisibility(View.INVISIBLE);
         return v;
     }
 
