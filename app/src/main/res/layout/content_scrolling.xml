@@ -466,14 +466,6 @@
                     android:text="@string/back"
                     android:visibility="visible" />
 
-                <Switch
-                    android:id="@+id/swithc_cam"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Auto Cam"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-
 
             </LinearLayout>
 

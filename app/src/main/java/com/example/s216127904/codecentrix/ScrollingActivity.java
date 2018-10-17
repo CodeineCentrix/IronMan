@@ -26,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -213,9 +214,15 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
 
             }
         });
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem item = menu.findItem(R.id.auto_cam);
+        autoCamSwitch = (Switch) item.getActionView().findViewById(R.id.drawer_switch);
         if(generalMethods.readFromFile(getString(R.string.camera_file_name)).equals("on")){
             onTakePicture(btnSave);
+            autoCamSwitch.setChecked(true);
         }
+
     }
     public void SetHeader(){
         String[] details = generalMethods.Read("user.txt",",");
@@ -573,6 +580,10 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
         navigationView = findViewById(R.id.nav_view);
         tent1 = findViewById(R.id.imgTent1);
         tent2 = findViewById(R.id.imgTent2);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem item = menu.findItem(R.id.auto_cam);
+        autoCamSwitch = (Switch) item.getActionView().findViewById(R.id.drawer_switch);
         tent2.setBackgroundColor(getResources().getColor(R.color.background));
         tent1.setBackgroundColor(getResources().getColor(R.color.background));
         setSupportActionBar(toolbar);
@@ -624,20 +635,14 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
             Intent ShowMap = new Intent(this,Map.class);
             startActivity(ShowMap);
         }else if(id == R.id.auto_cam){
-            //autoCamSwitch ;
-            if(generalMethods.readFromFile(getString(R.string.camera_file_name)).equals("on")){
-                autoCamSwitch.setChecked(true);
-            }
-            autoCamSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(autoCamSwitch.isChecked()){
+
+                    if(!autoCamSwitch.isChecked()){
                         generalMethods.writeToFile("on",getString(R.string.camera_file_name));
+                        autoCamSwitch.setChecked(true);
                     }else {
                         generalMethods.writeToFile("off",getString(R.string.camera_file_name));
+                        autoCamSwitch.setChecked(false);
                     }
-                }
-            });
         }
         else if (id == R.id.nav_Help) {
             onImageGalleryClicked(btnSave);
