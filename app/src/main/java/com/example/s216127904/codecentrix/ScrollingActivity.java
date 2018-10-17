@@ -550,7 +550,12 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
         imgBlue.setVisibility(View.GONE);
         imgRed.setVisibility(View.GONE);
         imgYellow.setVisibility(View.GONE);
-
+        tent1X.setVisibility(View.INVISIBLE);
+        tent2X.setVisibility(View.INVISIBLE);
+        tent1.setBackgroundColor(getResources().getColor(R.color.background));
+        tent2.setBackgroundColor(getResources().getColor(R.color.background));
+        penalty.TentID =0;
+        spnComment.setAdapter( new CommentAdapter(getApplicationContext(),this, comments, -1));
         vBlue.setBackgroundColor(getResources().getColor(R.color.blue));
         vYellow.setBackgroundColor(getResources().getColor(R.color.yellow));
         vRed.setBackgroundColor(getResources().getColor(R.color.red));
@@ -645,7 +650,8 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
                     }
         }
         else if (id == R.id.nav_Help) {
-            onImageGalleryClicked(btnSave);
+            Intent ShowHelpScreen = new Intent(this,HelpScreen.class);
+            startActivity(ShowHelpScreen);
         } else if (id == R.id.nav_SignOut) {
             finish();
         }
