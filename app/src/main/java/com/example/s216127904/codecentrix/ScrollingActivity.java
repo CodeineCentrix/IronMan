@@ -239,6 +239,9 @@ public class ScrollingActivity extends AppCompatActivity  implements IgetComment
         TextView tvEmail = header.findViewById(R.id.navEmail);
         tvEmail.setText(details[2]);
         tvFullName.setText(details[1]);
+        tvEmail.setTextColor(getResources().getColor(R.color.colorWhite));
+        tvFullName.setTextColor(getResources().getColor(R.color.colorWhite));
+
         navigationView.setNavigationItemSelectedListener(this);
     }
     public void onTakePicture(View view){
